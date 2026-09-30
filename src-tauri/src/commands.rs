@@ -1021,6 +1021,8 @@ pub async fn profile_test_connection(
         .ok_or("profile_not_found")?;
     let storage = state.settings.credential_diagnostic(profile);
     emit_settings_snapshot(&app, &state.settings)?;
+    let client = crate::clients::connection_diagnostics::reachability_client()
+        .map_err(|_| "connection_check_failed")?;
     if app_is_ui_test() {
         return Ok(serde_json::json!({"credential": storage, "network": "notTested"}));
     }
@@ -1040,11 +1042,6 @@ pub async fn profile_test_connection(
             }))
         }
     };
-    let client = reqwest::Client::builder()
-        .redirect(reqwest::redirect::Policy::none())
-        .timeout(std::time::Duration::from_secs(8))
-        .build()
-        .map_err(|_| "connection_check_failed")?;
     let network = match client.head(endpoint).send().await {
         // Every HTTP response, including 401/403/405, proves TLS + server reachability.
         Ok(_) => "reachable",

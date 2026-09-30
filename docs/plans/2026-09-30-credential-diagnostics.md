@@ -9,3 +9,5 @@ Debian installation promotes the existing Secret Service recommendation to a GNO
 Tests use synthetic values and mocked results. Actual provider authentication is deliberately deferred to an explicitly started subtitle session, whose possible billing is explained before the check; no paid long-running test is automatic.
 
 Native package readiness in UI-test mode must invoke the diagnostic from the settings window and validate its safe fixture response before marking the frontend ready. This exercises command registration and Tauri ACL in the actual installed binary. Only app-settings permits the command; other window capabilities cannot invoke it.
+
+The shared reachability-client constructor installs the existing ring crypto provider before building reqwest (which uses rustls-no-provider). UI-test mode constructs this production client before skipping the request, so native smoke covers TLS initialization as well as IPC. A fresh-process regression asserts that the constructor works with no process-global provider initially installed; parallel HTTP tests cannot mask this first-click failure.

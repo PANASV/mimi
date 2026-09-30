@@ -269,7 +269,7 @@ export function ServiceProfiles({
           <div className="credential-panel">
             <button
               type="button"
-              className="settings-button"
+              className="settings-button settings-button--quiet"
               disabled={mutationsDisabled}
               onClick={() => {
                 setPendingAction("test-connection");
