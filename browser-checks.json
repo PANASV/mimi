@@ -1,0 +1,74 @@
+[
+  {
+    "lang": "zh",
+    "page": 0,
+    "title": "先连接一个翻译服务",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi 初次使用\n稍后设置\n1\n连接服务\n2\n播放声音\n3\n显示字幕\n先连接一个翻译服务\n\n用你已经开通的账号就好。\n\n你的服务账号\n获取 API Key\nmimi 配置\n填写并保存\n翻译服务\nAlibaba Cloud\n⌄\n官方开通与获取密钥 ↗\n填写配置 →\n\n先填写服务配置。\n\n需要哪些信息？费用怎么算？\n← 返回\n继续 →"
+  },
+  {
+    "lang": "zh",
+    "page": 1,
+    "title": "让视频的声音播放出来",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi 初次使用\n稍后设置\n1\n连接服务\n2\n播放声音\n3\n显示字幕\n让视频的声音播放出来\n\nmimi 听的是电脑声音，不是麦克风。\n\n当前播放设备\n1\n\n打开一段有人说话的视频，点播放。\n\n2\n\n确认能听到声音，音量没有静音。\n\n首次使用：在系统设置中允许 mimi 录制屏幕与系统音频。\n\n开始字幕后，mimi 会检查播放声音。\n\n← 返回\n继续 →"
+  },
+  {
+    "lang": "zh",
+    "page": 2,
+    "title": "字幕会显示在这里",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi 初次使用\n稍后设置\n1\n连接服务\n2\n播放声音\n3\n显示字幕\n字幕会显示在这里\n\n字幕会显示在独立浮窗里。\n\n正在播放的视频\n字幕会出现在这里\n位置示意\n\n正在等待翻译\n\n没有出现？检查服务和声音 →\n字幕开始后会使用你的翻译服务，可能产生费用。\n← 返回\n开始字幕"
+  },
+  {
+    "lang": "en",
+    "page": 0,
+    "title": "Connect a translation service",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi Getting started\nSet up later\n1\nConnect\n2\nPlay audio\n3\nCaptions\nConnect a translation service\n\nUse a provider account you already have.\n\nProvider account\nGet an API key\nmimi setup\nEnter and save\nTranslation service\nAlibaba Cloud\n⌄\nProvider setup and API key ↗\nSet up →\n\nEnter your service settings first.\n\nSetup details and pricing\n← Back\nNext →"
+  },
+  {
+    "lang": "en",
+    "page": 1,
+    "title": "Play your video with sound",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi Getting started\nSet up later\n1\nConnect\n2\nPlay audio\n3\nCaptions\nPlay your video with sound\n\nmimi listens to computer playback, not your microphone.\n\nAudio output\n1\n\nOpen a video with speech and press play.\n\n2\n\nCheck that you can hear it and sound is not muted.\n\nAllow screen and system audio recording in System Settings.\n\nStart captions to check playback audio.\n\n← Back\nNext →"
+  },
+  {
+    "lang": "en",
+    "page": 2,
+    "title": "Your captions appear here",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi Getting started\nSet up later\n1\nConnect\n2\nPlay audio\n3\nCaptions\nYour captions appear here\n\nCaptions appear in a separate floating window.\n\nYour video\nCaptions appear here\nPosition example\n\nWaiting for translation\n\nNo captions? Check setup and audio →\nStarting captions uses your translation service and may incur charges.\n← Back\nStart captions"
+  },
+  {
+    "lang": "ja",
+    "page": 0,
+    "title": "翻訳サービスを接続",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi はじめに\nあとで設定\n1\n接続\n2\n音声\n3\n字幕\n翻訳サービスを接続\n\nお使いのサービスのアカウントで接続できます。\n\nサービスのアカウント\nAPI Key を取得\nmimi の設定\n入力して保存\n翻訳サービス\nAlibaba Cloud\n⌄\n公式の設定とキー取得 ↗\n設定する →\n\nまずサービスを設定してください。\n\n設定の詳細と料金\n← 戻る\n次へ →"
+  },
+  {
+    "lang": "ja",
+    "page": 1,
+    "title": "動画の音声を再生",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi はじめに\nあとで設定\n1\n接続\n2\n音声\n3\n字幕\n動画の音声を再生\n\nmimi はパソコンの再生音声を聞きます。マイクは使いません。\n\n出力デバイス\n1\n\n話し声のある動画を開いて再生してください。\n\n2\n\n音声が聞こえることと、ミュートされていないことを確認してください。\n\nシステム設定で画面とシステム音声の録音を許可してください。\n\n字幕を開始すると再生音声を確認します。\n\n← 戻る\n次へ →"
+  },
+  {
+    "lang": "ja",
+    "page": 2,
+    "title": "字幕はここに表示されます",
+    "width": 560,
+    "overflow": false,
+    "body": "mimi はじめに\nあとで設定\n1\n接続\n2\n音声\n3\n字幕\n字幕はここに表示されます\n\n字幕は独立したフローティングウィンドウに表示されます。\n\n再生中の動画\n字幕はここに表示されます\n配置例\n\n翻訳を待っています\n\n字幕が出ない場合は設定と音声を確認 →\n字幕を開始すると翻訳サービスを使用し、料金がかかる場合があります。\n← 戻る\n字幕を開始"
+  }
+]

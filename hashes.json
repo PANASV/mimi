@@ -1,0 +1,38 @@
+[
+  {
+    "file": "zh-step-1.png",
+    "sha256": "45ac34ba9143a0f468d9ff47f5e62dc46011b59ab28f850594910096022a8c00"
+  },
+  {
+    "file": "zh-step-2.png",
+    "sha256": "73973fef69bd1b1349ca55f0d0da284fe46dcb49604887c033d22bf4378f488f"
+  },
+  {
+    "file": "zh-step-3.png",
+    "sha256": "eb4592a7a543bcfa58c1037ec9644795159fc0ef80f9b724e3216a44b8c3c77a"
+  },
+  {
+    "file": "en-step-1.png",
+    "sha256": "db169b9d418bec8f075b6d5a52f14392b4f882bab43f696798beabd5fefc23a4"
+  },
+  {
+    "file": "en-step-2.png",
+    "sha256": "b039769555c7bea515417fc3bc8b9d9afe6573aa305bb18b08174eae56f2163f"
+  },
+  {
+    "file": "en-step-3.png",
+    "sha256": "cd627e3118a20895aba6fa0402b769fb4bbee938096ad16ff3ad120854435974"
+  },
+  {
+    "file": "ja-step-1.png",
+    "sha256": "1e27e61829a59cd187561109df8f77ca7448e575d22234f99f2fed2c4d0fe0c2"
+  },
+  {
+    "file": "ja-step-2.png",
+    "sha256": "f33d6f6cb7d6b5e3002c28498a9f8362616e9a7e5f0380998edfb2cef1e97df0"
+  },
+  {
+    "file": "ja-step-3.png",
+    "sha256": "e39419756f8143c85e3290eaa53feb7636ab3a224ec485390fe0cde27150eecd"
+  }
+]
