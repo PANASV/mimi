@@ -99,6 +99,8 @@ struct SendProgress {
     last_completed_ms: AtomicU64,
     last_pcm_ms: AtomicU64,
     last_sound_ms: AtomicU64,
+    non_silent: AtomicBool,
+    audio_frames_observed: AtomicBool,
 }
 
 impl SendProgress {
@@ -108,6 +110,8 @@ impl SendProgress {
             last_completed_ms: AtomicU64::new(0),
             last_pcm_ms: AtomicU64::new(0),
             last_sound_ms: AtomicU64::new(0),
+            non_silent: AtomicBool::new(false),
+            audio_frames_observed: AtomicBool::new(false),
         }
     }
 
@@ -198,6 +202,14 @@ impl AudioSendPipeline {
                     },
                 };
                 let bytes = data.len();
+                if bytes > 0 {
+                    progress_worker
+                        .audio_frames_observed
+                        .store(true, Ordering::Release);
+                }
+                if peak_pcm16_sample(&data) > 32 {
+                    progress_worker.non_silent.store(true, Ordering::Release);
+                }
                 peak_audio_sample = peak_audio_sample.max(peak_pcm16_sample(&data));
                 let started_at = Instant::now();
                 let result = send_audio(data).await;
@@ -249,6 +261,14 @@ impl AudioSendPipeline {
 
     pub fn input_activity(&self) -> (bool, bool) {
         self.progress.input_activity(Instant::now())
+    }
+
+    pub fn has_audio_frames(&self) -> bool {
+        self.progress.audio_frames_observed.load(Ordering::Acquire)
+    }
+
+    pub fn has_non_silent_audio(&self) -> bool {
+        self.progress.non_silent.load(Ordering::Acquire)
     }
 
     pub fn ingress(&self) -> Option<AudioIngress> {
@@ -339,6 +359,26 @@ mod tests {
             progress.completed_ago_ms(start + Duration::from_millis(450)),
             Some(10)
         );
+    }
+
+    #[tokio::test]
+    async fn first_run_audio_requires_signal_and_resets_for_a_new_pipeline() {
+        let silent = AudioSendPipeline::spawn(|_| async { Ok::<(), ()>(()) }, |_| {});
+        silent.ingress().unwrap().try_send(vec![0; 32]).unwrap();
+        assert!(silent.finish(Duration::from_millis(200)).await);
+        assert!(!silent.has_non_silent_audio());
+        assert!(silent.has_audio_frames());
+        let audible = AudioSendPipeline::spawn(|_| async { Ok::<(), ()>(()) }, |_| {});
+        audible
+            .ingress()
+            .unwrap()
+            .try_send(512_i16.to_le_bytes().to_vec())
+            .unwrap();
+        assert!(audible.finish(Duration::from_millis(200)).await);
+        assert!(audible.has_non_silent_audio());
+        let next = AudioSendPipeline::spawn(|_| async { Ok::<(), ()>(()) }, |_| {});
+        assert!(!next.has_non_silent_audio());
+        assert!(!next.has_audio_frames());
     }
 
     #[tokio::test]

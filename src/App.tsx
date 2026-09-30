@@ -5,6 +5,8 @@ import { appIsUiTest, appUiTestFrontendReady, isTauri, testProfileConnection } f
 import { selectSessionStatusKind, useStore } from "./lib/store";
 import { useDesktopShortcuts } from "./lib/useDesktopShortcuts";
 
+const FirstRunHost = lazy(() => import("./components/first-run/FirstRunHost").then(module => ({ default: module.FirstRunHost })));
+
 const OverlayWindow = lazy(() =>
   import("./windows/overlay/OverlayWindow").then((module) => ({
     default: module.OverlayWindow,
@@ -58,6 +60,7 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       {windowContent}
+      {label === "settings" && <FirstRunHost />}
       <FrontendReadySignal label={label} />
     </Suspense>
   );

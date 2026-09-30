@@ -92,6 +92,7 @@ pub struct Preferences {
     pub pulse_style: PulseStyle,
     pub subtitle_animation: Option<bool>,
     pub subtitle_blends_with_background: bool,
+    pub immersive_help_seen: bool,
     pub overlay_locked: bool,
     pub overlay_frame: Option<OverlayFrame>,
     pub frame_layout_version: u64,
@@ -118,6 +119,7 @@ impl Default for Preferences {
             pulse_style: PulseStyle::Classic,
             subtitle_animation: None,
             subtitle_blends_with_background: false,
+            immersive_help_seen: false,
             overlay_locked: false,
             overlay_frame: None,
             frame_layout_version: 0,
@@ -1393,7 +1395,8 @@ impl SettingsStore {
             return value.clone();
         }
         if self.is_ui_test {
-            let value = if service == self.profile_keychain_service
+            let value = if std::env::var("MIMI_UI_TEST_FIRST_RUN").as_deref() != Ok("1")
+                && service == self.profile_keychain_service
                 && account == credential_account(&ServiceProfile::alibaba_default())
             {
                 Some("sk-demo-not-a-real-key".to_string())

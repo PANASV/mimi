@@ -24,6 +24,8 @@ const RELEASES_LATEST_URL: &str = "https://github.com/yuxino/mimi/releases/lates
 #[serde(rename_all = "camelCase")]
 pub enum SettingsNavigationTarget {
     Service,
+    Guide,
+    ImmersiveHelp,
 }
 
 pub struct AppState {
@@ -564,13 +566,17 @@ async fn apply_settings_draft(
 /// Applies a settings draft while the caller owns the settings mutation
 /// guard. Keeping the read and write inside one guard makes native toggles
 /// atomic with ordinary settings saves.
-fn apply_settings_draft_guarded(
+pub(crate) fn apply_settings_draft_guarded(
     app: &AppHandle,
     state: &AppState,
     draft: SettingsDraft,
 ) -> Result<SettingsSnapshotPayload, String> {
     let changes_ui_language = draft.ui_language.is_some();
     let enables_background_blend = draft.subtitle_blends_with_background == Some(true);
+    if enables_background_blend && !state.settings.preferences().immersive_help_seen {
+        app_show_settings(app.clone(), Some(SettingsNavigationTarget::ImmersiveHelp))?;
+        return Ok(SettingsSnapshotPayload::from_store(&state.settings));
+    }
     ensure_settings_draft_allowed(&draft, state.session.has_active_session())?;
     let needs_save = draft.source_language.is_some()
         || draft.target_language.is_some()
@@ -837,7 +843,10 @@ pub async fn profile_delete_api_key(
 }
 
 #[tauri::command]
-pub async fn session_start(state: State<'_, AppState>) -> Result<(), String> {
+pub async fn session_start(app: AppHandle, state: State<'_, AppState>) -> Result<(), String> {
+    if !crate::onboarding::start_is_configured(&app, &state.settings) {
+        return Ok(());
+    }
     state.session.start(true).await
 }
 

@@ -40,6 +40,8 @@ export interface SubtitleSnapshot {
 }
 
 export interface SessionStateEvent {
+  /** Native generation attached to rendered content; absent in old/browser fixtures. */
+  guideGeneration?: string;
   status: SessionStatus;
   isActive: boolean;
   isPaused: boolean;

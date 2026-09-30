@@ -8,6 +8,7 @@ mod core;
 mod desktop_shortcuts;
 #[cfg(target_os = "linux")]
 mod linux_startup;
+mod onboarding;
 mod session_export;
 mod session_history;
 mod session_manager;
@@ -112,6 +113,8 @@ pub fn run() {
                     let _ = window.set_title("mimi UI test settings");
                 }
             }
+            let first_run_fixture =
+                is_ui_test && std::env::var("MIMI_UI_TEST_FIRST_RUN").as_deref() == Ok("1");
             let settings = Arc::new(if is_ui_test {
                 match std::env::var_os("MIMI_UI_TEST_PREFERENCES_DIR") {
                     Some(directory) => SettingsStore::load_ui_test_preferences(directory.into())?,
@@ -124,6 +127,9 @@ pub fn run() {
                     &app.config().identifier,
                 )
             });
+            if is_ui_test && !first_run_fixture {
+                let _ = settings.save_preferences(|prefs| prefs.immersive_help_seen = true);
+            }
             // A deterministic standard-overlay fixture is useful for native
             // window-level checks. It changes only the in-memory UI-test
             // snapshot; `SettingsStore` never persists UI-test writes.
@@ -334,6 +340,10 @@ pub fn run() {
             commands::profile_delete,
             commands::profile_save_credentials,
             commands::profile_test_connection,
+            onboarding::guide_status,
+            onboarding::guide_caption_visible,
+            onboarding::guide_enable_immersive,
+            onboarding::guide_open_link,
             commands::profile_delete_api_key,
             crate::session_export::session_archive_state,
             crate::session_export::session_transcript_page,
@@ -824,7 +834,7 @@ fn setup_global_shortcuts(
     // which case the OS keeps delivering it to that app.
     let session_register =
         app.global_shortcut()
-            .on_shortcut(session_shortcut, move |_app, _shortcut, event| {
+            .on_shortcut(session_shortcut, move |app, _shortcut, event| {
                 if event.state() != ShortcutState::Pressed {
                     return;
                 }
@@ -838,6 +848,13 @@ fn setup_global_shortcuts(
                     return;
                 }
                 last_trigger.store(now_ms, std::sync::atomic::Ordering::SeqCst);
+                if !session_for_handler.is_active() {
+                    if let Some(state) = app.try_state::<AppState>() {
+                        if !onboarding::start_is_configured(app, &state.settings) {
+                            return;
+                        }
+                    }
+                }
                 let session = Arc::clone(&session_for_handler);
                 tauri::async_runtime::spawn(async move {
                     let status = session.status_kind();

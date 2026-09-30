@@ -1,3 +1,5 @@
+import { consumeGuideEdit } from "../../components/first-run/guideNavigation";
+import { ProviderHelp } from "../../components/first-run/ServiceSetupHelp";
 import { testProfileConnection } from "../../lib/ipc";
 import { diagnosticCopy, connectionDiagnosticMessage, profileErrorMessage } from "../../lib/connectionDiagnostics";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
@@ -85,6 +87,27 @@ export function ServiceProfiles({
   }
 
   const SelectedCredentialEditor = selectedProfile && ["alibabaCloud", "deepLX"].includes(selectedProfile.provider) ? AlibabaCredentialEditor : CredentialEditor;
+  const [guideFocus, setGuideFocus] = useState(false);
+  useEffect(() => {
+    const edit = () => {
+      const id = consumeGuideEdit();
+      if (!id) return;
+      setSelectedProfileId(id);
+      setShowsEditor(true);
+      setGuideFocus(true);
+    };
+    edit();
+    window.addEventListener("mimi-guide-edit", edit);
+    return () => window.removeEventListener("mimi-guide-edit", edit);
+  }, []);
+  useEffect(() => {
+    if (!guideFocus || !showsEditor) return;
+    const frame = requestAnimationFrame(() => {
+      document.querySelector<HTMLInputElement>(".credential-form input:not(:disabled)")?.focus();
+      setGuideFocus(false);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [guideFocus, showsEditor, selectedProfileId]);
 
   const mutationsDisabled = sessionIsActive || pendingAction !== null;
   const atProfileLimit = settings.profiles.length >= 20;
@@ -538,6 +561,7 @@ function CredentialEditor({
   if (profile.credentialState === "present" && !editingSavedCredential) {
     return (
       <div className="credential-panel credential-panel--saved">
+        <ProviderHelp provider={profile.provider} />
         <span className="credential-panel__saved-actions">
           <button
             type="button"
@@ -576,6 +600,7 @@ function CredentialEditor({
 
   return (
     <div className="credential-panel" aria-busy={busy}>
+      <ProviderHelp provider={profile.provider} />
       <div className="credential-panel__heading">
         <span>
           <span className="credential-panel__label">{I18N.settings.credentials}</span>

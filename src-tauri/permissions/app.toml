@@ -6,6 +6,7 @@ commands.allow = [
   "session_get_state",
   "app_desktop_shortcut_commands",
   "app_ui_test_frontend_ready",
+  "guide_status",
 ]
 
 [[permission]]
@@ -36,6 +37,8 @@ commands.allow = [
   "profile_delete",
   "profile_save_credentials",
   "profile_test_connection",
+  "guide_enable_immersive",
+  "guide_open_link",
   "profile_delete_api_key",
   "session_start",
   "session_stop",
@@ -57,6 +60,7 @@ commands.allow = [
   "resize_start",
   "resize_move",
   "resize_end",
+  "guide_caption_visible",
 ]
 
 [[permission]]

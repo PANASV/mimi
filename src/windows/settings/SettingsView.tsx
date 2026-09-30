@@ -1,3 +1,4 @@
+import { requestGuideNavigation } from "../../components/first-run/guideNavigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "../../components/Icon";
 import { Switch } from "../../components/Switch";
@@ -201,9 +202,10 @@ export function SettingsView() {
     let disposed = false;
     let unlisten: (() => void) | undefined;
 
-    void listenSettingsNavigation(() => {
+    void listenSettingsNavigation(target => {
+      if (target === "guide" || target === "immersiveHelp") requestGuideNavigation(target);
       selectCategory("service");
-      window.requestAnimationFrame(() => {
+      if (target === "service") window.requestAnimationFrame(() => {
         document.getElementById("settings-category-service")?.focus();
       });
     })
@@ -221,6 +223,12 @@ export function SettingsView() {
       disposed = true;
       unlisten?.();
     };
+  }, [selectCategory]);
+
+  useEffect(() => {
+    const edit = () => selectCategory("service");
+    window.addEventListener("mimi-guide-edit", edit);
+    return () => window.removeEventListener("mimi-guide-edit", edit);
   }, [selectCategory]);
 
   return (
