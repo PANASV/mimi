@@ -3,7 +3,7 @@ import type { ServiceProvider } from "../../lib/types";
 import type { GuideHelp } from "./FirstRunGuide";
 
 // Official sources reviewed 2026-09-30. No numeric rates or relay endorsements.
-const help: Record<ServiceProvider, [string, string, string, string, string]> = {
+const help: Record<Exclude<ServiceProvider, "deepLX">, [string, string, string, string, string]> = {
   alibabaCloud: ["开通百炼模型服务，创建北京地域的 API Key。", "Enable Model Studio and create a Beijing-region API key.", "API Key", "https://help.aliyun.com/zh/model-studio/get-api-key", "https://help.aliyun.com/zh/model-studio/model-pricing"],
   openAIRealtime: ["在 OpenAI API 平台创建项目与 API Key，确认可使用 Realtime 模型。ChatGPT 订阅不包含 API 用量。", "Create an OpenAI API project and key with Realtime access. ChatGPT subscriptions do not include API usage.", "API Key", "https://developers.openai.com/api/docs/guides/realtime", "https://developers.openai.com/api/docs/pricing"],
   googleGeminiLive: ["在 Google AI Studio 的项目里创建 Gemini API Key，确认项目可使用 Live API。", "Create a Gemini API key in Google AI Studio and check Live API availability for your project.", "API Key", "https://ai.google.dev/gemini-api/docs/api-key", "https://ai.google.dev/gemini-api/docs/pricing"],
@@ -13,7 +13,7 @@ const help: Record<ServiceProvider, [string, string, string, string, string]> = 
   baiduTranslate: ["在百度智能云机器翻译中创建应用，勾选实时语音翻译权限。AppKey 填应用的 API Key，不是 Secret Key。", "Create a Machine Translation app in Baidu AI Cloud with realtime speech translation access. AppKey means the app's API Key, not Secret Key.", "AppID · AppKey (API Key)", "https://ai.baidu.com/ai-doc/MT/2l317egif", "https://ai.baidu.com/ai-doc/MT/Tl9pjqsym"],
   xAIRealtime: ["在 xAI 控制台创建 API Key，并确认账号有实时语音服务额度与访问权限。", "Create an API key in the xAI console and check realtime voice access and available credits.", "API Key", "https://docs.x.ai/developers/quickstart", "https://docs.x.ai/developers/pricing"],
 };
-const costs: Record<ServiceProvider, [string, string]> = {
+const costs: Record<Exclude<ServiceProvider, "deepLX">, [string, string]> = {
   alibabaCloud: ["按所用音频模型及翻译模型计费；各模式计量不同。", "Audio and translation models have separate, mode-specific meters."],
   openAIRealtime: ["实时翻译按音频时长计费，实际价格以当前模型为准。", "Realtime translation is billed by audio duration; check the current model rate."],
   googleGeminiLive: ["按 Live 模型的音频与文本 token 用量计费；免费额度视项目而定。", "Live audio and text tokens are metered; free-tier availability depends on your project."],
@@ -24,6 +24,8 @@ const costs: Record<ServiceProvider, [string, string]> = {
   xAIRealtime: ["实时 Voice Agent 按分钟计费；请先检查余额与当前价格。", "Realtime Voice Agent is billed per minute; check your balance and current rate."],
 };
 export function providerHelp(provider: ServiceProvider): GuideHelp {
-  const row = help[provider];
-  return { setup: t(row[0]), fields: row[2], cost: t(costs[provider][0]), documentationUrl: row[3], billingUrl: row[4], checkedAt: "2026-09-30" };
+  // Legacy combined DeepLX profiles share Alibaba speech recognition setup.
+  const guidedProvider = provider === "deepLX" ? "alibabaCloud" : provider;
+  const row = help[guidedProvider];
+  return { setup: t(row[0]), fields: row[2], cost: t(costs[guidedProvider][0]), documentationUrl: row[3], billingUrl: row[4], checkedAt: "2026-09-30" };
 }

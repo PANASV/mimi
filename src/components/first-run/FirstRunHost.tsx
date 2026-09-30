@@ -1,6 +1,6 @@
 import { guideText as t } from "./guideCopy";
 import { useEffect, useRef, useState } from "react";
-import { FirstRunGuide } from "./FirstRunGuide";
+import { FirstRunVisualCandidate } from "./FirstRunVisualCandidate";
 import { providerDisplayName } from "../../lib/i18n";
 import { isTauri, testProfileConnection } from "../../lib/ipc";
 import { connectionDiagnosticMessage, profileErrorMessage } from "../../lib/connectionDiagnostics";
@@ -125,7 +125,7 @@ export function FirstRunHost() {
             if (!isTauri) { setFeedback(t("浏览器仅预览，不更改原生沉浸状态。")); return; }
             await enableGuideImmersive(); close();
           })}>{t("知道了，开启")}</button></footer>
-        </section> : <FirstRunGuide key={revision} evidence={evidence} selectedService={profile?.provider ?? "alibabaCloud"} services={SERVICE_PROVIDERS.map(provider => ({ id: provider, name: providerDisplayName(provider), description: settings.profiles.some(item => item.provider === provider) ? t("已有配置 · 可返回编辑") : t("使用自己的官方账号") }))} help={providerHelp(profile?.provider ?? "alibabaCloud")} platform={/Mac/.test(navigator.userAgent) ? "macos" : /Windows/.test(navigator.userAgent) ? "windows" : "linux"} onSelect={select} onEdit={edit} onCheck={check} onStart={start} onLater={close} busy={busy || sessionActive} />}
+        </section> : <FirstRunVisualCandidate key={revision} evidence={evidence} selectedService={profile?.provider ?? "alibabaCloud"} services={SERVICE_PROVIDERS.map(provider => ({ id: provider, name: providerDisplayName(provider), description: settings.profiles.some(item => item.provider === provider) ? t("已有配置 · 可返回编辑") : t("使用自己的官方账号") }))} help={providerHelp(profile?.provider ?? "alibabaCloud")} platform={/Mac/.test(navigator.userAgent) ? "macos" : /Windows/.test(navigator.userAgent) ? "windows" : "linux"} onSelect={select} onEdit={edit} onCheck={check} onStart={start} onLater={close} busy={busy || sessionActive} />}
         {feedback && <p className="first-run-feedback" role="status">{feedback}</p>}
         {isTauri && sessionStatus === "error" && <p className="first-run-feedback" role="alert">{profileErrorMessage(sessionError)}</p>}
       </div>

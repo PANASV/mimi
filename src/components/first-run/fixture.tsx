@@ -11,7 +11,7 @@ if (isTauri) throw new Error("First-run fixture is browser-only.");
 const parameters = new URLSearchParams(location.search);
 const language = parameters.get("lang");
 setStoredUiLanguage(language === "en" || language === "ja" ? language : "zh");
-if (parameters.get("scenario") === "immersive") requestGuideNavigation("immersiveHelp");
+requestGuideNavigation(parameters.get("scenario") === "immersive" ? "immersiveHelp" : "guide");
 useStore.setState(state => ({
   settings: { ...state.settings, profiles: state.settings.profiles.map(profile => ({ ...profile, credentialState: "missing" })) },
 }));
