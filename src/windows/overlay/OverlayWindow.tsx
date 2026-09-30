@@ -22,6 +22,8 @@ import {
   visibleLiveSubtitles,
 } from "./overlayModel";
 
+import { reportPaintedCaption } from "../../components/first-run/guideIpc";
+
 const ACCENT = "#7AA8FF";
 const OVERLAY_INSET = 6;
 
@@ -51,6 +53,22 @@ export function OverlayWindow() {
   const blendsWithBackground = settings.subtitleBlendsWithBackground;
   const presentationCollapsed = collapsed && !blendsWithBackground;
   const phase = computeActivityPhase(session, settings);
+  useEffect(() => {
+    if (!isTauri || !session.isActive || presentationCollapsed) return;
+    let canceled = false;
+    let frame = 0;
+    const first = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        const rendered = document.querySelector<HTMLElement>("[data-guide-subtitles]");
+        if (!rendered?.innerText.trim() || document.visibilityState !== "visible") return;
+        if (!canceled && session.guideGeneration) {
+          void reportPaintedCaption(session.guideGeneration).catch(() => {});
+        }
+      });
+    });
+    return () => { canceled = true; cancelAnimationFrame(first); cancelAnimationFrame(frame); };
+  }, [session.subtitles, session.isActive, session.guideGeneration, presentationCollapsed, settings.subtitleDisplayMode]);
+
   const detectedLanguage = session.detectedLanguage;
   const segmentLength = subtitleSegmentLength(
     settings.targetLanguage,

@@ -179,7 +179,7 @@ export function appQuit(): Promise<void> {
   return invoke("app_quit");
 }
 
-export type SettingsNavigationTarget = "service";
+export type SettingsNavigationTarget = "service" | "guide" | "immersiveHelp";
 
 export function appShowSettings(
   target?: SettingsNavigationTarget,

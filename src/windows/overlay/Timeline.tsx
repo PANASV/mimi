@@ -64,6 +64,7 @@ export const Timeline = memo(function Timeline({
 
   return (
     <div
+      data-guide-subtitles
       ref={containerRef}
       className={timelineClassName(blendsWithBackground)}
       style={{ overscrollBehavior: "contain" }}

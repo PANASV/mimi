@@ -41,6 +41,7 @@ pub enum StatusPayload {
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SessionStateEvent {
+    pub guide_generation: String,
     pub status: StatusPayload,
     #[serde(rename = "isActive")]
     pub is_active: bool,
@@ -151,6 +152,10 @@ fn source_switch_requires_reconnect(
         && (current_source != next_source
             || current_target != next_target
             || current_mode != next_mode)
+}
+
+fn guide_caption_generation_matches(current: u64, text: u64, reported: u64) -> bool {
+    current != NO_GENERATION && current == text && current == reported
 }
 
 fn pause_transition_is_valid(
@@ -419,6 +424,7 @@ impl From<&TranslationSessionState> for SessionStateEvent {
             },
         };
         Self {
+            guide_generation: "0".into(),
             is_active: state.status.is_active(),
             status,
             is_paused: false,
@@ -467,6 +473,8 @@ pub struct SessionManager {
     client_generation: Arc<AtomicU64>,
     audio_pipeline: Arc<Mutex<Option<Arc<AudioSendPipeline>>>>,
     audio_pipeline_generation: Arc<AtomicU64>,
+    guide_caption_generation: Arc<AtomicU64>,
+    guide_text_generation: Arc<AtomicU64>,
     capture_generation: Arc<AtomicU64>,
     active_settings: Arc<Mutex<Option<LiveTranslationConfiguration>>>,
     active_settings_generation: Arc<AtomicU64>,
@@ -538,6 +546,8 @@ impl SessionManager {
             client_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
             audio_pipeline: Arc::new(Mutex::new(None)),
             audio_pipeline_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
+            guide_caption_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
+            guide_text_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
             capture_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
             active_settings: Arc::new(Mutex::new(None)),
             active_settings_generation: Arc::new(AtomicU64::new(NO_GENERATION)),
@@ -1665,7 +1675,23 @@ impl SessionManager {
         let newly_confirmed = {
             let mut controller = self.controller.lock().unwrap();
             let previous = controller.state.subtitles.history.last().cloned();
+            let previous_source = controller.state.subtitles.source.text.clone();
+            let previous_translation = controller.state.subtitles.translation.text.clone();
             controller.handle(event.clone());
+            if (controller.state.subtitles.source.text != previous_source
+                || controller.state.subtitles.translation.text != previous_translation)
+                && (!controller.state.subtitles.source.text.trim().is_empty()
+                    || !controller
+                        .state
+                        .subtitles
+                        .translation
+                        .text
+                        .trim()
+                        .is_empty())
+            {
+                self.guide_text_generation
+                    .store(generation, Ordering::SeqCst);
+            }
             let current = controller.state.subtitles.history.last();
             (current != previous.as_ref())
                 .then(|| current.cloned())
@@ -2403,9 +2429,54 @@ impl SessionManager {
 
     /// Builds the current session state snapshot without emitting it (used by
     /// windows that boot after the last broadcast, e.g. the overlay control).
+    pub fn guide_capture_state(&self) -> (u64, bool, bool, bool, bool) {
+        let generation = self.active_generation.load(Ordering::SeqCst);
+        let running = self.status_kind() == "listening"
+            && self.capture_generation.load(Ordering::SeqCst) == generation
+            && generation != NO_GENERATION;
+        let audio = running
+            && self
+                .audio_pipeline
+                .lock()
+                .unwrap()
+                .as_ref()
+                .is_some_and(|pipeline| pipeline.has_non_silent_audio());
+        let frames = running
+            && self
+                .audio_pipeline
+                .lock()
+                .unwrap()
+                .as_ref()
+                .is_some_and(|pipeline| pipeline.has_audio_frames());
+        let caption = running && self.guide_caption_generation.load(Ordering::SeqCst) == generation;
+        (generation, running, audio, caption, frames)
+    }
+
+    pub fn guide_mark_caption_visible(&self, generation: u64) {
+        let (current, running, _, _, _) = self.guide_capture_state();
+        if running
+            && guide_caption_generation_matches(
+                current,
+                self.guide_text_generation.load(Ordering::SeqCst),
+                generation,
+            )
+        {
+            self.guide_caption_generation
+                .store(generation, Ordering::SeqCst);
+        }
+    }
+
     pub fn current_state_event(&self) -> SessionStateEvent {
+        let generation = self.active_generation.load(Ordering::SeqCst);
         let state = self.controller.lock().unwrap().state.clone();
         let mut event = SessionStateEvent::from(&state);
+        // Retained subtitles after reconnect/resume are not new-session evidence.
+        event.guide_generation = if self.guide_text_generation.load(Ordering::SeqCst) == generation
+        {
+            generation.to_string()
+        } else {
+            NO_GENERATION.to_string()
+        };
         event.is_active |= self.is_recovering.load(Ordering::SeqCst);
         event.is_paused = self.is_paused();
         event.is_overlay_collapsed = self.is_overlay_collapsed();
@@ -2542,6 +2613,18 @@ impl SessionManager {
 #[cfg(test)]
 mod lifecycle_tests {
     use super::*;
+
+    #[test]
+    fn first_run_caption_rejects_retained_text_and_stale_render_acknowledgments() {
+        assert!(!guide_caption_generation_matches(42, 41, 42));
+        assert!(!guide_caption_generation_matches(42, 42, 41));
+        assert!(!guide_caption_generation_matches(
+            NO_GENERATION,
+            NO_GENERATION,
+            NO_GENERATION
+        ));
+        assert!(guide_caption_generation_matches(42, 42, 42));
+    }
 
     #[test]
     fn terminal_error_remains_visible_but_is_not_an_active_session() {
