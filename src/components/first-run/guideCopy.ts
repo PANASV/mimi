@@ -40,9 +40,9 @@ const copy: Record<string, [string, string]> = {
     "Your captions are showing.",
     "字幕が表示されました。"
   ],
-  "等第一条字幕出现。": [
-    "Wait for your first caption.",
-    "最初の字幕を待ちましょう。"
+  "正在等待翻译": [
+    "Waiting for translation",
+    "翻訳を待っています"
   ],
   "初次使用": [
     "Getting started",
@@ -132,25 +132,9 @@ const copy: Record<string, [string, string]> = {
     "Start captions",
     "字幕を開始"
   ],
-  "可以继续看视频了。想调整服务或字幕，随时回来。": [
-    "Enjoy your video. Return here whenever you want to adjust your setup.",
-    "動画をお楽しみください。サービスや字幕の調整はいつでもできます。"
-  ],
-  "连接成功还不算完成。字幕窗口实际出现文字后，这一步才完成。": [
-    "This step finishes when text is actually shown in the subtitle window.",
-    "字幕ウィンドウに実際の文字が表示されたら、この手順は完了です。"
-  ],
-  "已确认字幕显示": [
-    "Captions confirmed",
-    "字幕の表示を確認済み"
-  ],
-  "等待实际字幕": [
-    "Waiting for actual captions",
-    "実際の字幕を待機中"
-  ],
-  "没有出现？返回检查配置、权限和声音。": [
-    "No captions yet? Go back to check setup, access and audio.",
-    "表示されない場合は設定、権限、音声を確認してください。"
+  "可以继续看视频了。": [
+    "You can keep watching.",
+    "そのまま視聴できます。"
   ],
   "← 返回": [
     "← Back",

@@ -1,5 +1,18 @@
 # First-run guide — review checkpoint (Refs #82)
 
+## Latest copy correction; visual redesign remains on hold
+
+At the user's request, the incomplete-caption page now only says “正在等待翻译”
+(`Waiting for translation` / `翻訳を待っています`), keeping the existing action
+and internal real-caption completion proof. The repeated acceptance-rule and
+“actual caption” explanatory paragraphs are removed; the completion line is
+shortened in the same three languages. Provider configuration, permission,
+billing and immersion recovery information remains. This is a copy-only patch,
+not the requested three-screen illustration redesign or character integration.
+PR85 remains held and outside PR88. The old browser/e96 native screenshots are
+previous-version evidence; new exact-head screenshots are pending and must not
+be called the new after state. No local native build, install or launch occurred.
+
 ## Confirmed source behavior, baseline 5f2a595 (#71)
 
 Initial local `origin/main` was stale at 979e351. Before production changes,

@@ -28,7 +28,7 @@ export function FirstRunGuide({ evidence, services, selectedService, help, platf
   const complete = guideComplete(evidence);
   const [linkError, setLinkError] = useState("");
   const openLink = (url: string) => { setLinkError(""); void openGuideLink(url).catch(() => setLinkError(t("暂时无法打开链接，请稍后再试。"))); };
-  const titles: Record<GuideStep, string> = { service: t("先把字幕准备好。"), credentials: t("连接你的服务。"), permissions: t("允许获取系统播放声音。"), audio: t("播放一小段有人说话的声音。"), caption: complete ? t("字幕出现了。") : t("等第一条字幕出现。") };
+  const titles: Record<GuideStep, string> = { service: t("先把字幕准备好。"), credentials: t("连接你的服务。"), permissions: t("允许获取系统播放声音。"), audio: t("播放一小段有人说话的声音。"), caption: complete ? t("字幕出现了。") : t("正在等待翻译") };
   const permissionCopy = platform === "android" ? t("允许显示字幕浮窗，再授权本次屏幕与音频捕获。录音权限用于捕获应用播放声音；mimi 不使用麦克风。拒绝后可以回来继续。") : platform === "macos" ? t("在系统设置里允许 mimi 录制屏幕与系统音频。mimi 只听系统声音，不使用麦克风。") : platform === "windows" ? t("mimi 捕获当前输出设备的播放声音。确认视频正在你使用的输出设备上播放。") : t("需要可用的 PulseAudio 或 PipeWire 输出监视器。确认选中的输出设备正在播放。");
   const advance = () => setStep(steps[Math.min(steps.indexOf(step) + 1, steps.length - 1)]);
   return <section className="first-run" aria-label={t("mimi 首次使用引导")}>
@@ -42,7 +42,7 @@ export function FirstRunGuide({ evidence, services, selectedService, help, platf
       {step === "permissions" && <><p>{permissionCopy}</p><div className="first-run__note"><strong>{evidence.permissions === "ready" ? t("权限已确认") : t("权限尚未确认")}</strong><p>{t("启动时如有系统提示，请按提示操作。连接服务可能产生费用。")}</p></div></>}
       {step === "audio" && <><p>{t("打开一段视频，让声音从当前输出设备播放。")}</p><div className="first-run__sound" aria-hidden="true">{[12, 22, 32, 18, 27, 38, 22, 14, 25].map((height, index) => <i key={index} style={{ height }} />)}</div><p role="status">{evidence.audio === "ready" ? t("已观测到系统播放声音。") : evidence.audio === "silent" ? t("收到的是静音。请检查音量和播放设备。") : t("还没有收到音频。请检查权限和播放设备。")}</p></>}
       {(step === "permissions" || step === "audio") && <><p>{t("开始会连接你的服务，可能产生费用。检查权限本身不会启动服务。")}</p><button className="first-run__secondary" disabled={busy} onClick={onStart}>{t("开始字幕")}</button></>}
-      {step === "caption" && <><p>{complete ? t("可以继续看视频了。想调整服务或字幕，随时回来。") : t("连接成功还不算完成。字幕窗口实际出现文字后，这一步才完成。")}</p><div className="first-run__note"><strong>{complete ? t("已确认字幕显示") : t("等待实际字幕")}</strong><p>{t("没有出现？返回检查配置、权限和声音。")}</p></div></>}
+      {step === "caption" && complete && <p>{t("可以继续看视频了。")}</p>}
     </div>
     {linkError && <p role="alert" className="first-run-feedback">{linkError}</p>}
     <footer><button className="first-run__quiet" disabled={step === "service"} onClick={() => setStep(steps[Math.max(0, steps.indexOf(step) - 1)])}>{t("← 返回")}</button><button className="first-run__primary" disabled={busy && step === "caption" && !complete} onClick={step === "caption" ? () => { if (complete) onLater(); else { setStep(firstMissingStep(evidence)); onStart(); } } : advance}>{step === "caption" ? complete ? t("去看视频吧") : t("检查并开始") : t("下一步 →")}</button></footer>
