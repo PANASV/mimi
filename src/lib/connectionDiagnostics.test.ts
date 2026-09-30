@@ -1,6 +1,6 @@
 import { afterEach, expect, it } from "vitest";
 import { setStoredUiLanguage } from "./i18n";
-import { connectionDiagnosticMessage, credentialErrorMessage, profileErrorMessage } from "./connectionDiagnostics";
+import { connectionDiagnosticMessage, credentialErrorMessage, profileErrorMessage, diagnosticCopy } from "./connectionDiagnostics";
 afterEach(() => setStoredUiLanguage("en"));
 it("localizes shortcut and storage errors without losing recovery guidance", () => {
   setStoredUiLanguage("zh");
@@ -16,7 +16,8 @@ it("keeps unauthenticated reachability distinct from valid credentials", () => {
   const message = connectionDiagnosticMessage({ credential: "missing", network: "reachable" });
   expect(message).toContain("尚未配置凭据");
   expect(message).toContain("尚未验证认证");
-  expect(message).toContain("HTTP 401");
+  expect(diagnosticCopy().details).toContain("HTTP 401");
+  expect(message).toContain("认证：尚未验证");
 });
 it("reports independent storage and network failures", () => {
   setStoredUiLanguage("en");

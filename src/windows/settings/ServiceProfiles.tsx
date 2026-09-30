@@ -287,6 +287,10 @@ export function ServiceProfiles({
               {pendingAction === "test-connection" ? diagnosticCopy().testing : diagnosticCopy().test}
             </button>
             <small>{diagnosticCopy().note}</small>
+            <details>
+              <summary>{diagnosticCopy().help}</summary>
+              <p>{diagnosticCopy().details}</p>
+            </details>
           </div>
           <CredentialEditor
             key={selectedProfile.id}
