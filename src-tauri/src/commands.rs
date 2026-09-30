@@ -985,3 +985,50 @@ pub async fn app_quit(app: AppHandle, state: State<'_, AppState>) -> Result<(), 
     app.exit(0);
     Ok(())
 }
+
+/// Explicit, credential-free reachability check. No session, audio, or auth request.
+#[tauri::command]
+pub async fn profile_test_connection(
+    app: AppHandle,
+    state: tauri::State<'_, AppState>,
+    profile_id: String,
+) -> Result<serde_json::Value, String> {
+    let (_, profiles) = state.settings.profile_catalog()?;
+    let profile = profiles
+        .iter()
+        .find(|p| p.id == profile_id)
+        .ok_or("profile_not_found")?;
+    let storage = state.settings.credential_diagnostic(profile);
+    emit_settings_snapshot(&app, &state.settings)?;
+    if app_is_ui_test() {
+        return Ok(serde_json::json!({"credential": storage, "network": "notTested"}));
+    }
+    use crate::core::provider::ProviderKind;
+    let endpoint = match profile.provider {
+        ProviderKind::AlibabaCloud => "https://dashscope.aliyuncs.com/api-ws/v1/realtime",
+        ProviderKind::OpenAIRealtime => "https://api.openai.com/v1/realtime/translations",
+        ProviderKind::GoogleGeminiLive => "https://generativelanguage.googleapis.com/",
+        ProviderKind::VolcanoEngine => "https://openspeech.bytedance.com/",
+        ProviderKind::TencentCloud => "https://asr.cloud.tencent.com/",
+        ProviderKind::BaiduTranslate => "https://aip.baidubce.com/",
+        ProviderKind::XAIRealtime => "https://api.x.ai/v1/realtime",
+        // Azure requires the private resource endpoint; this check never reads it.
+        ProviderKind::AzureOpenAIRealtime => {
+            return Ok(serde_json::json!({
+                "credential": storage, "network": "notTested"
+            }))
+        }
+    };
+    let client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .timeout(std::time::Duration::from_secs(8))
+        .build()
+        .map_err(|_| "connection_check_failed")?;
+    let network = match client.head(endpoint).send().await {
+        // Every HTTP response, including 401/403/405, proves TLS + server reachability.
+        Ok(_) => "reachable",
+        Err(error) if error.is_timeout() => "timeout",
+        Err(_) => "unreachable",
+    };
+    Ok(serde_json::json!({"credential": storage, "network": network}))
+}

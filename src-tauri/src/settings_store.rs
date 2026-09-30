@@ -34,7 +34,7 @@ const PROFILE_CATALOG_SCHEMA_VERSION: u32 = 1;
 const LEGACY_MIGRATION_TOMBSTONE_ACCOUNT: &str = "migration:legacy-alibaba:v1";
 const LEGACY_MIGRATION_TOMBSTONE_VALUE: &str = "complete";
 const PROFILE_CATALOG_UNAVAILABLE: &str = "Service profile settings are unavailable.";
-const CREDENTIAL_STORE_UNAVAILABLE: &str = "The system credential store is unavailable.";
+const CREDENTIAL_STORE_UNAVAILABLE: &str = "credential_store_unavailable";
 const PREFERENCES_UNAVAILABLE: &str = "Settings could not be saved.";
 const PROFILE_NOT_FOUND: &str = "The service profile does not exist.";
 const LAST_PROFILE: &str = "At least one service profile is required.";
@@ -662,6 +662,24 @@ impl SettingsStore {
         *catalog = next_catalog;
         *prefs = next_prefs;
         Ok(())
+    }
+
+    /// Content-free diagnostic distinguishes unreadable storage from malformed data.
+    pub fn credential_diagnostic(&self, profile: &ServiceProfile) -> &'static str {
+        self.secret_cache
+            .lock()
+            .unwrap()
+            .retain(|_, result| result.is_ok());
+        match self.load_api_key_for_profile(profile) {
+            Err(_) => "unavailable",
+            Ok(None) => "missing",
+            Ok(Some(value)) => {
+                match ProviderCredentials::decode_from_keychain(profile.provider, &value) {
+                    Ok(_) => "present",
+                    Err(_) => "invalid",
+                }
+            }
+        }
     }
 
     pub fn credential_state(&self, profile: &ServiceProfile) -> CredentialState {
@@ -1789,6 +1807,22 @@ mod tests {
             fake.load_count(PROFILE_KEYCHAIN_SERVICE, &credential_account(&default)),
             1
         );
+    }
+
+    #[test]
+    fn explicit_diagnostic_recovers_failed_storage_without_restart() {
+        let fake = FakeSecretStore::default();
+        let profile = ServiceProfile::alibaba_default();
+        let account = credential_account(&profile);
+        fake.make_unavailable(PROFILE_KEYCHAIN_SERVICE, &account);
+        let store = settings(&fake);
+        assert_eq!(store.credential_diagnostic(&profile), "unavailable");
+        fake.state.lock().unwrap().unavailable.clear();
+        assert_eq!(store.credential_diagnostic(&profile), "missing");
+        store
+            .save_api_key(&profile.id, "synthetic-test-value")
+            .unwrap();
+        assert_eq!(store.credential_diagnostic(&profile), "present");
     }
 
     #[test]
