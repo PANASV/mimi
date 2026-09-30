@@ -126,6 +126,11 @@ pub fn run() {
                 is_ui_test,
                 &app.config().identifier,
             ));
+            // Ordinary smoke fixtures model an existing setup. First-run tests
+            // keep the fresh preference so every native entry exercises the guard.
+            if is_ui_test && !first_run_fixture {
+                let _ = settings.save_preferences(|prefs| prefs.immersive_help_seen = true);
+            }
             // A deterministic standard-overlay fixture is useful for native
             // window-level checks. It changes only the in-memory UI-test
             // snapshot; `SettingsStore` never persists UI-test writes.

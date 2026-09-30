@@ -69,7 +69,7 @@ cold-window guide navigation is queued behind the existing Settings readiness ha
 `guide_status` is content-free and read-only. macOS permission preflight does not prompt
 or capture. Other platforms retain unknown until actual capture is active. Permission
 false takes precedence over capture, so revocation cannot appear ready. Audio evidence
-comes from a per-pipeline non-silent PCM measurement; new pipelines reset it. First-caption
+comes from a per-pipeline non-silent PCM measurement; new pipelines reset it. No-frame and silent-frame states are distinguished. First-caption
 acknowledgment requires a new text event in the current generation, two animation frames
 of actual visible timeline text, a visible/non-collapsed native overlay, and an active
 capture generation. Old retained subtitles, stopped sessions and synthetic fixtures
@@ -82,8 +82,8 @@ users can still disable immersion without a prompt.
 
 Safe native first-run fixture: `MIMI_UI_TEST=1 MIMI_UI_TEST_FIRST_RUN=1`. It resolves a new
 process-specific temporary config path, provides no demo credentials, does not persist
-writes and never reads user catalog/preferences/keychain. Ordinary UI-test behavior stays
-compatible with existing smoke scripts. The development bundle is built from this branch
+writes and never reads user catalog/preferences/keychain. Ordinary UI-test fixtures mark the immersion explanation as previously seen, staying
+compatible with existing smoke scripts; the first-run fixture explicitly does not. The development bundle is built from this branch
 at base 5f2a595; no release build or user session is used for this audit.
 
 ### Browser verification, 1280 × 720, base 5f2a595
