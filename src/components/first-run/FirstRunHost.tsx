@@ -69,7 +69,7 @@ export function FirstRunHost() {
   }, [visible]);
   useEffect(() => {
     if (visible) modal.current?.querySelector<HTMLButtonElement>("button")?.focus();
-  }, [visible]);
+  }, [visible, immersive, revision]);
 
   const run = async (operation: () => Promise<void>) => {
     if (busy) return;
