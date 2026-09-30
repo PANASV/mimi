@@ -1,0 +1,37 @@
+{
+  "commit": "1e7de491646929871cfd1854f46b1ce3dd3c7c6a",
+  "ui_commit": "b84705042000afe7b1d2568a64576d40b0805b31",
+  "ui_delta": "Final commit only updates xAI billing URL; full builds repeated.",
+  "base": "2471629c4a8917a16179e71633fa4b33f7b4f413",
+  "pull_request": "https://github.com/yuxino/mimi/pull/86",
+  "version": "1.5.5",
+  "versionCode": 10505,
+  "emulator_api": 35,
+  "screen": "1080x2400 / Pixel 7",
+  "unit_tests": {
+    "debug": 39,
+    "release": 39,
+    "failures": 0
+  },
+  "lint_errors": 0,
+  "first_run_ui": {
+    "zh_light": 16,
+    "ja_light": 16,
+    "en_dark": 16
+  },
+  "settings_smoke": 8,
+  "provider_sessions_started": 0,
+  "real_keys_or_user_audio": false,
+  "live_caption_verified": false,
+  "real_devices_or_bluetooth_verified": false,
+  "artifacts": {
+    "debug": {
+      "sha256": "817590fe906f3215210ffdaff54cc40f8cbc1926c610a50f89de78d0f09c8539",
+      "bytes": 17265304
+    },
+    "release_unsigned": {
+      "sha256": "052d9f75b044b2e93d42846bfa2fc989db59a23efed8b27db37a3e994705cec3",
+      "bytes": 13722587
+    }
+  }
+}

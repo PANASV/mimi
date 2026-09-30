@@ -1,0 +1,17 @@
+{
+  "system": "Android 15 / API 35 Google APIs arm64-v8a",
+  "emulator": "Pixel 7, 1080x2400, density 420",
+  "fixture": "empty app data, no credentials/provider/capture; default Chinese UI, light theme",
+  "before": {
+    "source_sha": "5f2a595cbc276d6f45ec016ebbef08f6a01d27cb",
+    "apk_sha256": "55357de2f5b21a0f4d848a73b2de3f36fe0bb59a7fd027e9468382887f284a3c",
+    "apk_bytes": 16080051,
+    "build": "assembleDebug, Gradle 8.10.2, JDK 17"
+  },
+  "after": {
+    "source_sha": "2471629c4a8917a16179e71633fa4b33f7b4f413",
+    "apk_sha256": "ebbfc802b83d4138a81824dd9f8f6af4d8dbde2368e731f59299cc013665ed92",
+    "apk_bytes": 16093463,
+    "build": "assembleDebug, Gradle 8.10.2, JDK 17"
+  }
+}

@@ -1,0 +1,308 @@
+[
+  {
+    "path": "android-capture-health/after.png",
+    "sha256": "b648b926b675152cbd66d35d1b343ac49ace412b013b2c851e48d239b08b9791",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-capture-health/before.png",
+    "sha256": "cf872b79690923bb9b52d57dbc9652d24c2b5af96c00c94fa88ae3cb6f4cb0b2",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/before.png",
+    "sha256": "36cbe96ce9f5dae9ddffa740a7d58cbf6a394430d46ade8c757de602988357bd",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-audio-not-started-dark.png",
+    "sha256": "ac67c58417b118e2090d2888b3238a5cfd38597cf069b1ba3c253ebf5a4ab916",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-audio-permission-denied-dark.png",
+    "sha256": "2090f31262258b27961e98648c2ce456d3ede1351cccd1da71fcf917193e7388",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-caption-not-complete-dark.png",
+    "sha256": "5cc6df9771c2e6235d7cdbe292c81c85519b25408e79b661789461953c02d9fb",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-credentials-missing-dark.png",
+    "sha256": "9322d82cf40dbe2849d02970ef55e67404539884b6ee6288a15aaf4fa360b25e",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-credentials-saved-dark.png",
+    "sha256": "de4b21571b0fd617cee26c3361b73990af48060f499f53aefde990b04ccfdd44",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-existing-install-no-forced-guide-dark.png",
+    "sha256": "a56abd0c09ac8bdc69fe01451174288e57960d9e2cb99971f00660f0654e1c04",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-first-dark.png",
+    "sha256": "e3fdd6e664ae478f843d8542b11bcd532cea861d9c34e8c0536813ad5646ba70",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-keyboard-focus-dark.png",
+    "sha256": "e8b5bfefb348680d3e01e202c6f98d9031dda0bb7a1aa7e9beb31a94505634bc",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-overlay-revoked-dark.png",
+    "sha256": "9e33801cb680d6f86cc1ce113eb0ae8d292ab839fb8be6d27ae53c074776b27e",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-permissions-denied-dark.png",
+    "sha256": "4d91a28a0816ac671c12ea941665e7306b771552bfe812ab0fe8bca0c537598d",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-permissions-granted-dark.png",
+    "sha256": "a1dc3d1b2d1660c193e3f5fd85e50b5d42d04c74410ae9b62aa38d290d1ca81d",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-permissions-unknown-dark.png",
+    "sha256": "d949426bd7beba4a6d1b4046043b9c1e41f993c1accca6a06711e1edbb46040f",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-projection-cancelled-dark.png",
+    "sha256": "61b8d9e4735a3ddc99ac8c767ae175241b53c6ad7ea8f326dca116da725241b4",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-system-audio-request-dark.png",
+    "sha256": "662d9fd74c98b36ea25f26a25f22aaf061d778268e3c75bca59b72921ed6a6b9",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-system-overlay-request-dark.png",
+    "sha256": "b7a6f69ac5f3ac1004d315c5da8acbd1fb106c8b18a5879c225d40b5828d3776",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/en-dark/guide-system-projection-request-dark.png",
+    "sha256": "6436492c8158a7d890043e104033b6276c0b108f58f9018a4bb5c809d2bfc73d",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-audio-not-started-light.png",
+    "sha256": "c990cdfd93c610479454db501f5a5cb2720b74cd455c1d4a138bfa923438b719",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-audio-permission-denied-light.png",
+    "sha256": "279d9178fdf346c960350469b6330131158bb9c33f5ca921e07ac864f1dea63e",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-caption-not-complete-light.png",
+    "sha256": "ddf1a84d3e804e1291643cb56e2272e1a8ff6bed1081cd691d8ac00b67eaf197",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-credentials-missing-light.png",
+    "sha256": "117f8b68cd3e97601cab510a0ff75334346cee3909ac370cff3afabb47081e2f",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-credentials-saved-light.png",
+    "sha256": "3eae510435ed889cb2f19d0e3df9068e2ffd524ba2dcabe573b58cab44998f50",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-existing-install-no-forced-guide-light.png",
+    "sha256": "9816a7f7e1718017b0e5dc60796983a899c0620be803eae523987115fe3b84e0",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-first-light.png",
+    "sha256": "7d7bd283098634842d750326513e55eb72c274ebbf02826c503222f85553ab87",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-keyboard-focus-light.png",
+    "sha256": "aa1bc0f9fbc66e37eb7d6ad1eb86d313f7d6074d65494d0b7c3025766b2959e5",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-overlay-revoked-light.png",
+    "sha256": "ed340a0bf4d8b90244f5d16691856ecbae4e4df31493a93cfdbe84b26607038f",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-permissions-denied-light.png",
+    "sha256": "e1024b2caed15dd224ef86a7d973ae7b625edd5a0261b6fc855590b1e7341d41",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-permissions-granted-light.png",
+    "sha256": "8f04dff253bfe18c5ef95b9350a4f29899b461d862c49253fe1fa0ba092fc276",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-permissions-unknown-light.png",
+    "sha256": "7054ef8283688a63727c9dd6419606c3053a7c93e5a9bcf97749cb41f30dd846",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-projection-cancelled-light.png",
+    "sha256": "d90d133044855a5d3f84e280406a0887acd699d9cb87a6560e1186aa86e8d99d",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-system-audio-request-light.png",
+    "sha256": "0e14af2fd00edc8c06d2c1c604a5327f0f5544cba9cdba9cf05b972ae1748d0a",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-system-overlay-request-light.png",
+    "sha256": "679209117fddeeaf1c06358ad65404c14be18a40f383d7099dd6806df7b63277",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/ja-light/guide-system-projection-request-light.png",
+    "sha256": "423b6299ec2e26a04acca77108c154f17b6264e8ae497fb7cce18a68e32ebe3d",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-audio-not-started-light.png",
+    "sha256": "0927cc177213f2ea47288a75b88e77988e3b00c583b5c9daab705e8b8ce5bf74",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-audio-permission-denied-light.png",
+    "sha256": "a2ee1e32647b3d120d7ed4e8c0491623113dd37119c49f3f34fc50df99672454",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-caption-not-complete-light.png",
+    "sha256": "eacdc8e313a854e8c4b31e610b856649930ba8c0ce667883ef0233488dc92cbc",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-credentials-missing-light.png",
+    "sha256": "14b29e3581f5e71b0007f951521a5b8daa6dce633b35bcba2ed41cd348201571",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-credentials-saved-light.png",
+    "sha256": "afa75f5d9a8b5b3dd84078d4985ff44a54411fde5eaeaf7865dd2ceaec774077",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-existing-install-no-forced-guide-light.png",
+    "sha256": "fbdacc6be19a733dab81e029a1df8f50311edd168006086c282b03f722eb3e48",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-first-light.png",
+    "sha256": "27f70f93a4f4b44b20b573b5a49b5452d6ec51bed224a1a575f2266190a55016",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-keyboard-focus-light.png",
+    "sha256": "d81cfedce7a1ef50432afc749812986522f5c7b03a70a87c95b9a0ea818af06b",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-overlay-revoked-light.png",
+    "sha256": "e646995105e519697b0da434fc1757194951cd6f1699a5f71aa3fa9bb61bd235",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-permissions-denied-light.png",
+    "sha256": "0d43bdc12ef34a405b08c358a3d14947f4ad1ee898e0a9755a86c869ce3c5681",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-permissions-granted-light.png",
+    "sha256": "decb90e57943efef8fe17c0b4d4de7b850f63deeee534e500f8aa7abdaefc5e9",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-permissions-unknown-light.png",
+    "sha256": "0b64c5f842b3f567f59b49c66f211a412ad314010b3687c0d5245899f1dd71a7",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-projection-cancelled-light.png",
+    "sha256": "d051c5907c84f642ed1d1ce6d216249df5a77e633178917bd2e54f27ffc62c6c",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-system-audio-request-light.png",
+    "sha256": "fb2ae9028fe31883144484784114bd42412baec72ce4d3be4711ebbe6577ead6",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-system-overlay-request-light.png",
+    "sha256": "82ac3d88ca7a13c8ca5ead0c77e28cf5da31e8acfcd63414e448f136c13f6508",
+    "width": 1080,
+    "height": 2400
+  },
+  {
+    "path": "android-first-run/zh-light/guide-system-projection-request-light.png",
+    "sha256": "c55c1928ae955c3353abc97c00a23fca85338b79879811a7fc5c22f2b2525428",
+    "width": 1080,
+    "height": 2400
+  }
+]
