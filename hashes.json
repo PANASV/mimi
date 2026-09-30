@@ -1,0 +1,38 @@
+[
+  {
+    "file": "zh-access.png",
+    "sha256": "c661390a426ab6082ae204785b309d47361fdbe1b8b0a1855ebda4489fa7a547"
+  },
+  {
+    "file": "zh-waiting.png",
+    "sha256": "5b2358b1bcf0198b191d864fd2020be970cf42597c5a1c332f19b6cc9559bbb5"
+  },
+  {
+    "file": "zh-sharing-ended.png",
+    "sha256": "f88fc22fcb68920f3e7cfd465e7fa2d2b06a460d1fefb48befd9e8f7ce415816"
+  },
+  {
+    "file": "en-access.png",
+    "sha256": "0f5a769af77eaccc9dbc523200f2da1cefc404ee0a2ca6cf977386bcb045a127"
+  },
+  {
+    "file": "en-waiting.png",
+    "sha256": "50f2589b6dc38c8729bcbe4b5c28ec423664a21b2c73adf0f78a52e6ecb47f18"
+  },
+  {
+    "file": "en-sharing-ended.png",
+    "sha256": "4404c27afbd5c2d9581244b48f6e03d1fa0ab2127c9e14a3d92a32d640407dcb"
+  },
+  {
+    "file": "ja-access.png",
+    "sha256": "8b4818a30b77589875ea93177491c33cfb5030f160e4ca5eb793d388098af6e4"
+  },
+  {
+    "file": "ja-waiting.png",
+    "sha256": "848df7f1cb53662ed030e253dd44c577c2a8c652c48a57ca0a91288c8543c235"
+  },
+  {
+    "file": "ja-sharing-ended.png",
+    "sha256": "a9d667d2e44d25fa3d8ca2ad97c4a4af1d204bd07c24c0348030fd88fb535c8e"
+  }
+]
