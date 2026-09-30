@@ -319,7 +319,8 @@ pub struct SettingsStore {
     migrate_legacy_alibaba: bool,
     /// Every first read is cached, including unavailable results. This keeps
     /// concurrent windows from triggering repeated OS authorization prompts.
-    /// Explicit saves/deletes replace the cached state, and restart retries it.
+    /// Explicit saves/deletes replace the cached state; diagnostics retry failed
+    /// reads for the selected profile, and restart retries all failed reads.
     secret_cache: Mutex<HashMap<SecretCacheKey, Result<Option<String>, SecretStoreError>>>,
     is_ui_test: bool,
 }
@@ -666,10 +667,25 @@ impl SettingsStore {
 
     /// Content-free diagnostic distinguishes unreadable storage from malformed data.
     pub fn credential_diagnostic(&self, profile: &ServiceProfile) -> &'static str {
+        let account = credential_account(profile);
+        let retry_legacy = is_default_alibaba(profile) && self.migrate_legacy_alibaba;
         self.secret_cache
             .lock()
             .unwrap()
-            .retain(|_, result| result.is_ok());
+            .retain(|(service, slot), result| {
+                let selected = service == self.profile_keychain_service && slot == &account;
+                let migration = retry_legacy
+                    && ((service == self.profile_keychain_service
+                        && slot == LEGACY_MIGRATION_TOMBSTONE_ACCOUNT)
+                        || (slot == LEGACY_KEYCHAIN_ACCOUNT
+                            && matches!(
+                                service.as_str(),
+                                LEGACY_KEYCHAIN_SERVICE_V3
+                                    | LEGACY_KEYCHAIN_SERVICE_V2
+                                    | LEGACY_KEYCHAIN_SERVICE
+                            )));
+                result.is_ok() || !(selected || migration)
+            });
         match self.load_api_key_for_profile(profile) {
             Err(_) => "unavailable",
             Ok(None) => "missing",
@@ -1823,6 +1839,19 @@ mod tests {
             .save_api_key(&profile.id, "synthetic-test-value")
             .unwrap();
         assert_eq!(store.credential_diagnostic(&profile), "present");
+    }
+
+    #[test]
+    fn diagnostic_does_not_retry_another_profiles_failed_slot() {
+        let fake = FakeSecretStore::default();
+        let store = settings(&fake);
+        let other = openai_profile(&store, "Synthetic other profile");
+        let account = credential_account(&other);
+        fake.make_unavailable(PROFILE_KEYCHAIN_SERVICE, &account);
+        assert_eq!(store.credential_state(&other), CredentialState::Unavailable);
+        store.credential_diagnostic(&ServiceProfile::alibaba_default());
+        assert_eq!(store.credential_state(&other), CredentialState::Unavailable);
+        assert_eq!(fake.load_count(PROFILE_KEYCHAIN_SERVICE, &account), 1);
     }
 
     #[test]
