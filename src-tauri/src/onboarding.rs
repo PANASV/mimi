@@ -125,7 +125,7 @@ pub fn guide_open_link(app: AppHandle, url: String) -> Result<(), String> {
         "https://ai.baidu.com/ai-doc/MT/2l317egif",
         "https://ai.baidu.com/ai-doc/MT/Tl9pjqsym",
         "https://docs.x.ai/developers/quickstart",
-        "https://docs.x.ai/developers/models",
+        "https://docs.x.ai/developers/pricing",
     ];
     if !ALLOWED.contains(&url.as_str()) {
         return Err("Unknown official documentation link.".into());

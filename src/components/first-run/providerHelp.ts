@@ -11,7 +11,7 @@ const help: Record<ServiceProvider, [string, string, string, string, string]> = 
   volcanoEngine: ["在新版豆包语音控制台实名认证、开通同声传译 2.0，再创建 API Key。mimi 使用新版 API Key，不使用旧版 AppID / Access Token。", "Verify your account and enable Simultaneous Interpretation 2.0 in the new Doubao Voice console. Mimi uses the new API key, not the legacy AppID/access token.", "API Key", "https://docs.volcengine.com/docs/DoubaoVoice/SimultaneousInterpretation20APIAccessDocumentation?lang=zh", "https://docs.volcengine.com/docs/DoubaoVoice/BillingOverview-15?lang=zh"],
   tencentCloud: ["开通腾讯云 ASR 的实时语音翻译，获取账号 AppID 与 API 密钥。后付费需自行开通。", "Enable realtime speech translation in Tencent Cloud ASR. Obtain your account AppID and API secret pair; pay-as-you-go must be enabled explicitly.", "AppID · SecretID · SecretKey", "https://cloud.tencent.com/document/api/1093/127565", "https://cloud.tencent.com/document/product/1093/35686"],
   baiduTranslate: ["在百度智能云机器翻译中创建应用，勾选实时语音翻译权限。AppKey 填应用的 API Key，不是 Secret Key。", "Create a Machine Translation app in Baidu AI Cloud with realtime speech translation access. AppKey means the app's API Key, not Secret Key.", "AppID · AppKey (API Key)", "https://ai.baidu.com/ai-doc/MT/2l317egif", "https://ai.baidu.com/ai-doc/MT/Tl9pjqsym"],
-  xAIRealtime: ["在 xAI 控制台创建 API Key，并确认账号有实时语音服务额度与访问权限。", "Create an API key in the xAI console and check realtime voice access and available credits.", "API Key", "https://docs.x.ai/developers/quickstart", "https://docs.x.ai/developers/models"],
+  xAIRealtime: ["在 xAI 控制台创建 API Key，并确认账号有实时语音服务额度与访问权限。", "Create an API key in the xAI console and check realtime voice access and available credits.", "API Key", "https://docs.x.ai/developers/quickstart", "https://docs.x.ai/developers/pricing"],
 };
 const costs: Record<ServiceProvider, [string, string]> = {
   alibabaCloud: ["按所用音频模型及翻译模型计费；各模式计量不同。", "Audio and translation models have separate, mode-specific meters."],
@@ -21,7 +21,7 @@ const costs: Record<ServiceProvider, [string, string]> = {
   volcanoEngine: ["按音频输入、文本输出 token 用量分别计费；不固定按小时收费。", "Audio input and text output tokens are metered separately, not at a fixed hourly rate."],
   tencentCloud: ["按音频时长计费，最低计量 1 秒；实时语音翻译没有免费额度。", "Billed by audio duration, with a minimum of one second. Realtime speech translation has no free quota."],
   baiduTranslate: ["实时语音翻译按音频时长计费；免费时长依认证类型与当前额度而定。", "Realtime speech translation is billed by audio duration; trial duration depends on verification and current quota."],
-  xAIRealtime: ["实时 Voice Agent 按连接时长（分钟）计费；请先检查余额与当前价格。", "Realtime Voice Agent is billed by connection duration in minutes; check your balance and current rate."],
+  xAIRealtime: ["实时 Voice Agent 按分钟计费；请先检查余额与当前价格。", "Realtime Voice Agent is billed per minute; check your balance and current rate."],
 };
 export function providerHelp(provider: ServiceProvider): GuideHelp {
   const row = help[provider];

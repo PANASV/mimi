@@ -44,7 +44,7 @@ are hardcoded.
 | Volcano | https://docs.volcengine.com/docs/DoubaoVoice/SimultaneousInterpretation20APIAccessDocumentation?lang=zh | https://docs.volcengine.com/docs/DoubaoVoice/BillingOverview-15?lang=zh | New console API Key via X-Api-Key; audio input and text output tokens, not a fixed hourly rate |
 | Tencent | https://cloud.tencent.com/document/api/1093/127565 | https://cloud.tencent.com/document/product/1093/35686 | AppID, SecretID, SecretKey; ASR realtime translation audio duration, minimum one second, no free quota; PAYG requires explicit activation |
 | Baidu | https://ai.baidu.com/ai-doc/MT/2l317egif | https://ai.baidu.com/ai-doc/MT/Tl9pjqsym | AppID and AppKey = API Key, not Secret Key; realtime speech translation duration, quota depends on verification |
-| xAI | https://docs.x.ai/developers/quickstart | https://docs.x.ai/developers/models | API Key; Voice Agent connection duration in minutes, not standalone STT pricing |
+| xAI | https://docs.x.ai/developers/quickstart | https://docs.x.ai/developers/pricing | API Key; Voice Agent per-minute pricing, not standalone STT pricing |
 
 Protocol checks: Volcano uses the new X-Api-Key header and fixed resource rather than
 legacy AppID/access token. Baidu uses `aip.baidubce.com/ws/realtime_speech_trans` and
@@ -110,3 +110,11 @@ subtitle-evidence and native-guard hunks. No toast/panel styles, DeepLX, fonts o
 implementation. Android shares the contract and owns platform-specific consent separately
 under issue #82. Character artwork awaits the user's logo-derived pose approval and is not
 included in this branch.
+
+## Native clean fixture acceptance (2026-09-30)
+
+Canonical `/Applications/mimi-dev.app` was built from `e96aba459ecf15d2f03d4eed66cc9792ead1b6c5` on this branch and launched with `MIMI_UI_TEST=1 MIMI_UI_TEST_FIRST_RUN=1`. The process uses isolated temporary settings with absent credentials; it does not read user service keys or connect to providers.
+
+Verified in the native WKWebView: automatic missing-credential guide; skip and reopen returning to the missing step; editor navigation focused the actual empty API Key field; diagnostic explicitly reported missing credentials, untested network and unverified authorization; caption step stayed waiting; first Settings immersion toggle opened an explanation before changing mode; explicit confirmation enabled immersion; Settings restored it; repeated enable/disable did not repeat the first-time explanation. Normal menu Quit completed and both formal/dev apps were confirmed stopped. App-scoped screenshots use only this synthetic fixture. Native shortcut/Escape injection did not produce an observable change in this run, so keyboard behavior is only browser-tested/source-verified, not claimed as native acceptance. No live sound, permission denial/revocation, paid provider or actual first caption was exercised.
+
+CI for that tested behavior commit: all applicable jobs passed in run `36705359033`, including Windows x64/ARM64 smoke and installed Linux package smoke. A later documentation-only billing wording/URL correction avoids implying that xAI's per-minute meter necessarily means all connected time; see the current official pricing link.

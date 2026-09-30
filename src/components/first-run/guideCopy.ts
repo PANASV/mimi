@@ -332,9 +332,9 @@ const copy: Record<string, [string, string]> = {
     "Realtime speech translation is billed by audio duration; trial duration depends on verification and current quota.",
     "リアルタイム音声翻訳は音声の時間で課金されます。無料時間は本人確認の種類と現在の枠によって異なります。"
   ],
-  "实时 Voice Agent 按连接时长（分钟）计费；请先检查余额与当前价格。": [
-    "Realtime Voice Agent is billed by connection duration in minutes; check your balance and current rate.",
-    "リアルタイム Voice Agent は接続時間（分）で課金されます。残高と現在の料金をご確認ください。"
+  "实时 Voice Agent 按分钟计费；请先检查余额与当前价格。": [
+    "Realtime Voice Agent is billed per minute; check your balance and current rate.",
+    "リアルタイム Voice Agent は分単位で課金されます。残高と現在の料金をご確認ください。"
   ],
   "收到的是静音。请检查音量和播放设备。": [
     "Silent audio received. Check volume and output device.",
