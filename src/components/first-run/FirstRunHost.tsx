@@ -1,4 +1,5 @@
 import "./first-run.css";
+import { guideFocusControls } from "./guideFocus";
 import { guideText as t } from "./guideCopy";
 import { useEffect, useRef, useState } from "react";
 import { FirstRunVisualCandidate } from "./FirstRunVisualCandidate";
@@ -124,7 +125,7 @@ export function FirstRunHost() {
       <div ref={modal} role="dialog" aria-modal="true" aria-label={t("mimi 初次使用")} aria-busy={busy || formBusy} onKeyDown={event => {
         if (event.key === "Escape") { event.preventDefault(); close(); }
         if (event.key === "Tab") {
-          const controls = Array.from(modal.current?.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex='0']") ?? []).filter(control => !control.closest("[hidden]") && control.getClientRects().length > 0);
+          const controls = modal.current ? guideFocusControls(modal.current) : [];
           if (!controls.length) return;
           const first = controls[0], last = controls[controls.length - 1];
           if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

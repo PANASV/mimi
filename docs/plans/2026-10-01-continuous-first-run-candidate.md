@@ -17,3 +17,5 @@
 用户正在使用的已安装本地包保持不动。本次不启动第二个原生 Mimi，不重装、不读取 Keychain 项目 ACL/秘密、不点击系统允许、不改签名或 TCC。已观察到正常 dev 启动请求 dev 的 profiles 凭据项，安装前后 designated requirement 一致且自签名无 Team ID；尚未核实该项目的 ACL/partition，不能把稳定签名或这次 UI 修正说成已解决重装认证。普通启动加载已保存的服务配置可能触发其系统授权，与开始付费捕获是两个动作。
 
 本轮结果：canonical check 的 Rust 536 passed / 1 ignored，前端 242 passed / 35 files；fmt、strict Clippy、构建及脚本通过，lint 0 errors / 1 既有 SoftwareUpdate Fast Refresh warning。最后增加嵌入表单保存中的串行锁后，重跑完整前端 lint/test/build 通过。浏览器三语共 9 张与 430×620 小窗口 3 张；实际同内存表单保存、跨步骤草稿、8 服务选项、沉浸入口的浏览器安全边界和稍后关闭已检查。原生新候选与系统权限跳转仍待验，不替代已安装旧候选的原生结果。
+
+后续实际 CDP 键盘检查发现：关闭的 details 子控件仍可能保留 layout rect，导致反向 Tab 试图聚焦隐藏末端按钮。修正为显式排除关闭的 details 内容（summary 本身仍可达），新增嵌套折叠回归。完整前端复核更新为 244 passed / 36 files，lint/typecheck/build 通过；Rust 无后续变化。
