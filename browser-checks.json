@@ -1,0 +1,8 @@
+[
+  {
+    "source": "01b298a74f14984658dca8ecfa66195fd89e959f",
+    "scenario": "default-off -> on -> change category -> off",
+    "passed": true,
+    "nativeDock": false
+  }
+]
