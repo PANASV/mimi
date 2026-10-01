@@ -1,0 +1,49 @@
+[
+  {
+    "variant": "before",
+    "lang": "zh",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\n设置\n字幕\n翻译服务\n通用\n保存与导出\n实时字幕\n暂时无法读取服务凭证\n\n⌘⇧Space\n\n配置服务\n翻译服务\n\n选好服务，就可以开始听了。\n\n翻译服务\n所有服务\nAlibaba Cloud\n使用 API Key，无需 Workspace ID。\n凭证状态不可用\n使用中\n测试连接\n检查安全存储和服务器可达性，不发送凭据或音频，不启动翻译会话，也不验证认证。\n仍然遇到问题？\n\n无法读取系统安全存储，请稍后重试。\n\nAPI KEY\n高级设置\n\n已保存的凭证不会回填或显示。新值只会写入这台设备的系统安全存储。\n\nMimi 暂时无法安全保存或读取密钥。请允许系统解锁密码存储的提示，然后点击“测试连接”重试。密钥不会以明文保存。 网络：服务器可达。尚未验证认证或服务权限，请启动字幕验证；可能产生服务商费用。 认证：尚未验证。\n\n保存并选用\n名称与删除\n初次使用？"
+  },
+  {
+    "variant": "before",
+    "lang": "en",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\nSettings\nSubtitles\nTranslation Service\nGeneral\nSave & export\nLive Subtitles\nService credentials are temporarily unavailable\n\n⌘⇧Space\n\nConfigure Service\nTranslation Service\n\nConnect your translation service and manage its credentials.\n\nTranslation Service\nAll services\nAlibaba Cloud\nUses an API key; no Workspace ID is required.\nCredential status unavailable\nIn Use\nTest connection\nChecks secure storage and server reachability without sending credentials or audio. Does not start a translation session or verify authentication.\nStill having trouble?\n\nSecure credential storage could not be read. Try again later.\n\nAPI KEY\nAdvanced settings\n\nSaved credentials are never filled back in or displayed. New values are written only to this device's secure credential storage.\n\nMimi cannot securely save or read your key. Allow the system password-storage unlock prompt, then test again. Keys are never saved as plain text. Network: server reachable. Authentication has not been verified. Start subtitles to verify service access; provider charges may apply. Authentication: not tested.\n\nSave and use\nName and deletion\nGetting started"
+  },
+  {
+    "variant": "before",
+    "lang": "ja",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\n設定\n字幕\n翻訳サービス\n一般\n保存と書き出し\nリアルタイム字幕\nサービス認証情報を一時的に読み取れません\n\n⌘⇧Space\n\nサービスを設定\n翻訳サービス\n\n翻訳サービスに接続し、設定と認証情報を管理します。\n\n翻訳サービス\nすべてのサービス\nAlibaba Cloud\nAPI Key のみを使用し、Workspace ID は不要です。\n認証情報の状態を確認できません\n使用中\n接続をテスト\n認証情報や音声を送信せずストレージと到達性を確認します。翻訳セッションの開始や認証確認は行いません。\n問題が続く場合\n\nOS の安全な認証情報ストレージを読み取れませんでした。後でもう一度お試しください。\n\nAPI KEY\n詳細設定\n\n保存済みの認証情報は再表示されません。新しい値はこの端末の安全な認証情報ストレージにのみ書き込まれます。\n\nMimi がキーを安全に読み書きできません。システムのパスワードストレージ解除を許可して再テストしてください。キーは平文で保存しません。 ネットワーク：サーバーに到達できました。サービス権限は字幕を開始して確認してください。料金が発生する場合があります。 認証：未確認。\n\n保存して使用\n名前と削除\nはじめに"
+  },
+  {
+    "variant": "after",
+    "lang": "zh",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\n设置\n字幕\n翻译服务\n通用\n保存与导出\n实时字幕\n暂时无法读取服务凭证\n\n⌘⇧Space\n\n配置服务\n翻译服务\n\n选好服务，就可以开始听了。\n\n使用引导\n翻译服务\n所有服务\nAlibaba Cloud\n使用 API Key，无需 Workspace ID。\n凭证状态不可用\n使用中\n检查连接\n\n无法读取服务凭据。先处理系统解锁提示，再重新检查。 服务器可连接，服务授权尚未验证。\n\n连接详情\n\n无法读取系统安全存储，请稍后重试。\n\nAPI KEY\n高级设置\n\n凭据保存在系统安全存储中。\n\n保存并选用\n配置名称\n删除配置"
+  },
+  {
+    "variant": "after",
+    "lang": "zh",
+    "stage": "header guide opened and dismissed"
+  },
+  {
+    "variant": "after",
+    "lang": "en",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\nSettings\nSubtitles\nTranslation Service\nGeneral\nSave & export\nLive Subtitles\nService credentials are temporarily unavailable\n\n⌘⇧Space\n\nConfigure Service\nTranslation Service\n\nConnect your translation service and manage its credentials.\n\nGetting started\nTranslation Service\nAll services\nAlibaba Cloud\nUses an API key; no Workspace ID is required.\nCredential status unavailable\nIn Use\nCheck connection\n\nCannot read service credentials. Handle the system unlock prompt, then check again. Server reachable; service authentication is not verified.\n\nConnection details\n\nSecure credential storage could not be read. Try again later.\n\nAPI KEY\nAdvanced settings\n\nCredentials are stored in the system credential store.\n\nSave and use\nConfiguration name\nDelete Configuration"
+  },
+  {
+    "variant": "after",
+    "lang": "ja",
+    "stage": "diagnostic",
+    "overflow": false,
+    "text": "mimi\n設定\n字幕\n翻訳サービス\n一般\n保存と書き出し\nリアルタイム字幕\nサービス認証情報を一時的に読み取れません\n\n⌘⇧Space\n\nサービスを設定\n翻訳サービス\n\n翻訳サービスに接続し、設定と認証情報を管理します。\n\n使い方\n翻訳サービス\nすべてのサービス\nAlibaba Cloud\nAPI Key のみを使用し、Workspace ID は不要です。\n認証情報の状態を確認できません\n使用中\n接続を確認\n\nサービスの認証情報を読めません。システムの解除案内を確認し、もう一度お試しください。 サーバーに接続できます。サービスの認証は未確認です。\n\n接続の詳細\n\nOS の安全な認証情報ストレージを読み取れませんでした。後でもう一度お試しください。\n\nAPI KEY\n詳細設定\n\n認証情報はシステムの安全なストレージに保存されます。\n\n保存して使用\n設定名\n設定を削除"
+  }
+]
