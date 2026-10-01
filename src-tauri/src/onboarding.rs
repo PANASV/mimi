@@ -48,6 +48,54 @@ pub fn guide_status(state: State<'_, AppState>) -> GuideStatus {
     }
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GuideShortcuts {
+    start_stop: bool,
+    immersive: bool,
+    subtitle_display: bool,
+    system_commands: Option<crate::desktop_shortcuts::DesktopShortcutCommands>,
+}
+
+/// Advertise only bindings currently registered by this running application.
+#[tauri::command]
+pub fn guide_shortcuts(app: AppHandle) -> Result<GuideShortcuts, String> {
+    use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
+    let commands = crate::desktop_shortcuts::app_desktop_shortcut_commands()?;
+    #[cfg(target_os = "macos")]
+    let modifiers = Modifiers::SUPER | Modifiers::SHIFT;
+    #[cfg(not(target_os = "macos"))]
+    let modifiers = Modifiers::CONTROL | Modifiers::SHIFT;
+    let registered = |code| {
+        commands.is_none()
+            && app
+                .global_shortcut()
+                .is_registered(Shortcut::new(Some(modifiers), code))
+    };
+    Ok(GuideShortcuts {
+        start_stop: registered(Code::Space),
+        immersive: registered(Code::KeyM),
+        subtitle_display: registered(Code::KeyB),
+        system_commands: commands,
+    })
+}
+
+/// Only an explicit guide button may open a fixed platform settings destination.
+#[tauri::command]
+pub fn guide_open_audio_settings(app: AppHandle) -> Result<(), String> {
+    if crate::commands::app_is_ui_test() {
+        return Err("guide.permissions_preview".into());
+    }
+    let url = match std::env::consts::OS {
+        "macos" => "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture",
+        "windows" => "ms-settings:sound",
+        _ => return Err("guide.permissions_manual".into()),
+    };
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|_| "guide.permissions_open_failed".into())
+}
+
 #[tauri::command]
 pub fn guide_caption_visible(
     app: AppHandle,
@@ -147,4 +195,19 @@ fn permission_granted() -> Option<bool> {
 #[cfg(not(target_os = "macos"))]
 fn permission_granted() -> Option<bool> {
     None
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn opening_system_settings_is_allowed_only_from_settings() {
+        let permissions = include_str!("../permissions/app.toml");
+        let permitted: Vec<_> = permissions
+            .split("[[permission]]")
+            .filter(|entry| entry.contains("\"guide_open_audio_settings\""))
+            .collect();
+        assert_eq!(permitted.len(), 1);
+        assert!(permitted[0].contains("identifier = \"app-settings\""));
+        assert!(include_str!("lib.rs").contains("onboarding::guide_open_audio_settings,"));
+    }
 }

@@ -40,9 +40,14 @@ type PendingConfirmation =
 export function ServiceProfiles({
   settings,
   sessionIsActive,
+  embedded = false,
+  onPendingChange,
 }: {
   settings: SettingsSnapshot;
   sessionIsActive: boolean;
+  /** The guide uses this same editor, save/activate path and error handling. */
+  embedded?: boolean;
+  onPendingChange?: (pending: boolean) => void;
 }) {
   const createProfile = useStore((state) => state.createProfile);
   const updateProfile = useStore((state) => state.updateProfile);
@@ -69,8 +74,8 @@ export function ServiceProfiles({
   });
 
   const selectedProfile = useMemo(
-    () => settings.profiles.find((profile) => profile.id === selectedProfileId) ?? activeProfile,
-    [activeProfile, selectedProfileId, settings.profiles],
+    () => embedded ? activeProfile : settings.profiles.find((profile) => profile.id === selectedProfileId) ?? activeProfile,
+    [activeProfile, embedded, selectedProfileId, settings.profiles],
   );
 
   if (
@@ -89,6 +94,7 @@ export function ServiceProfiles({
   const SelectedCredentialEditor = selectedProfile && ["alibabaCloud", "deepLX"].includes(selectedProfile.provider) ? AlibabaCredentialEditor : CredentialEditor;
   const [guideFocus, setGuideFocus] = useState(false);
   useEffect(() => {
+    if (embedded) return;
     const edit = () => {
       const id = consumeGuideEdit();
       if (!id) return;
@@ -99,7 +105,7 @@ export function ServiceProfiles({
     edit();
     window.addEventListener("mimi-guide-edit", edit);
     return () => window.removeEventListener("mimi-guide-edit", edit);
-  }, []);
+  }, [embedded]);
   useEffect(() => {
     if (!guideFocus || !showsEditor) return;
     const frame = requestAnimationFrame(() => {
@@ -118,6 +124,7 @@ export function ServiceProfiles({
     successFeedback: string | ((snapshot: SettingsSnapshot) => Feedback),
   ): Promise<SettingsSnapshot | null> => {
     setPendingAction(action);
+    onPendingChange?.(true);
     setFeedback(null);
     try {
       const snapshot = await operation();
@@ -135,6 +142,7 @@ export function ServiceProfiles({
       return null;
     } finally {
       setPendingAction(null);
+      onPendingChange?.(false);
     }
   };
 
@@ -252,21 +260,21 @@ export function ServiceProfiles({
   };
 
   return (
-    <SettingsSection id="service-profiles" title={I18N.settings.serviceProfilesTitle} hideHeading>
+    <SettingsSection id={embedded ? "guide-service-profiles" : "service-profiles"} title={I18N.settings.serviceProfilesTitle} hideHeading>
       {sessionIsActive && (
         <InlineFeedback tone="info" icon="lock">
           {I18N.settings.profileMutationsLocked}
         </InlineFeedback>
       )}
-      {showsProviderPicker ? (
+      {!embedded && showsProviderPicker ? (
         <ProviderPicker
           disabled={mutationsDisabled}
           onChoose={(provider) => void handleCreate(provider)}
           onCancel={() => setShowsProviderPicker(false)}
         />
-      ) : showsEditor && selectedProfile ? (
+      ) : (embedded || showsEditor) && selectedProfile ? (
         <div className="service-detail">
-          <button
+          {!embedded && <button
             type="button"
             className="settings-link service-back"
             disabled={pendingAction !== null}
@@ -278,14 +286,14 @@ export function ServiceProfiles({
           >
             <Icon name="chevron-left" />
             {I18N.settings.backToServices}
-          </button>
-          <div className="service-detail__identity">
+          </button>}
+          {!embedded && <div className="service-detail__identity">
             <ProviderMark provider={selectedProfile.provider} />
             <span>
               <h2>{selectedProfile.provider === "deepLX" && selectedProfile.name === "DeepLX (Audio 3.0 ASR)" ? providerDisplayName("alibabaCloud") : selectedProfile.name}</h2>
               <small>{providerDescription(selectedProfile.provider === "deepLX" ? "alibabaCloud" : selectedProfile.provider)}</small>
             </span>
-          </div>
+          </div>}
           <div className="service-detail__status">
             <CredentialBadge state={selectedProfile.credentialState} />
             {selectedProfile.id === settings.activeProfileId && (
@@ -295,7 +303,7 @@ export function ServiceProfiles({
               </span>
             )}
           </div>
-          <div className="credential-panel">
+          {!embedded && <div className="credential-panel">
             <button
               type="button"
               className="settings-button settings-button--quiet"
@@ -320,11 +328,11 @@ export function ServiceProfiles({
               <summary>{diagnosticCopy().help}</summary>
               <p>{diagnosticCopy().details}</p>
             </details>
-          </div>
+          </div>}
           <SelectedCredentialEditor
             key={selectedProfile.id}
             profile={selectedProfile}
-            inputId={`profile-api-key-${selectedProfile.id}`}
+            inputId={`${embedded ? "guide-" : ""}profile-api-key-${selectedProfile.id}`}
             disabled={mutationsDisabled}
             busy={pendingAction === "save-key" || pendingAction === "delete-key"}
             feedback={feedback}
@@ -349,7 +357,7 @@ export function ServiceProfiles({
                 {I18N.settings.useProfile}
               </button>
             )}
-          <details className="service-options">
+          {!embedded && <details className="service-options">
             <summary>
               {I18N.settings.profileOptions}
               <Icon name="chevron-down" />
@@ -407,7 +415,7 @@ export function ServiceProfiles({
                   onConfirm={() => void confirmProfileDelete()}
                 />
               )}
-          </details>
+          </details>}
         </div>
       ) : (
         <div className="services-home">
@@ -480,7 +488,7 @@ export function ServiceProfiles({
           )}
         </div>
       )}
-      {feedback && !(showsEditor && selectedProfile && !showsProviderPicker) && <InlineFeedback tone={feedback.tone}>{feedback.message}</InlineFeedback>}
+      {feedback && !((embedded || showsEditor) && selectedProfile && !showsProviderPicker) && <InlineFeedback tone={feedback.tone}>{feedback.message}</InlineFeedback>}
     </SettingsSection>
   );
 }

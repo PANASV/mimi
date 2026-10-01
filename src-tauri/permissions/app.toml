@@ -7,6 +7,7 @@ commands.allow = [
   "app_desktop_shortcut_commands",
   "app_ui_test_frontend_ready",
   "guide_status",
+  "guide_shortcuts",
 ]
 
 [[permission]]
@@ -39,6 +40,7 @@ commands.allow = [
   "profile_test_connection",
   "guide_enable_immersive",
   "guide_open_link",
+  "guide_open_audio_settings",
   "profile_delete_api_key",
   "session_start",
   "session_stop",

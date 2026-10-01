@@ -341,6 +341,8 @@ pub fn run() {
             commands::profile_save_credentials,
             commands::profile_test_connection,
             onboarding::guide_status,
+            onboarding::guide_shortcuts,
+            onboarding::guide_open_audio_settings,
             onboarding::guide_caption_visible,
             onboarding::guide_enable_immersive,
             onboarding::guide_open_link,
