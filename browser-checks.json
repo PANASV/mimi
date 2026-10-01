@@ -1,0 +1,108 @@
+[
+  {
+    "version": "before",
+    "scenario": "translation to bilingual",
+    "geometry": {
+      "scrollTop": 25,
+      "scrollHeight": 86,
+      "clientHeight": 61,
+      "top": 755,
+      "bottom": 816,
+      "ranges": [
+        {
+          "text": "Mimi export test: this is synthetic sample text.",
+          "top": 736,
+          "bottom": 753,
+          "visible": false
+        },
+        {
+          "text": "Mimi 导出测试：这是合成的示例文字。",
+          "top": 759,
+          "bottom": 780,
+          "visible": true
+        }
+      ]
+    },
+    "source": "ad51bcc6d15fecaffa659140c3a6cbb7d2771f42"
+  },
+  {
+    "version": "after",
+    "scenario": "translation to bilingual",
+    "geometry": {
+      "scrollTop": 0,
+      "scrollHeight": 86,
+      "clientHeight": 61,
+      "top": 755,
+      "bottom": 816,
+      "ranges": [
+        {
+          "text": "Mimi export test: this is synthetic sample text.",
+          "top": 761,
+          "bottom": 778,
+          "visible": true
+        },
+        {
+          "text": "Mimi 导出测试：这是合成的示例文字。",
+          "top": 784,
+          "bottom": 805,
+          "visible": true
+        }
+      ]
+    },
+    "source": "db44d57b48d4bbba8330b4d651b182f9fb9671fb"
+  },
+  {
+    "version": "after",
+    "scenario": "repeated original/translation/bilingual cycle",
+    "geometry": {
+      "scrollTop": 0,
+      "scrollHeight": 86,
+      "clientHeight": 61,
+      "top": 755,
+      "bottom": 816,
+      "ranges": [
+        {
+          "text": "Mimi export test: this is synthetic sample text.",
+          "top": 761,
+          "bottom": 778,
+          "visible": true
+        },
+        {
+          "text": "Mimi 导出测试：这是合成的示例文字。",
+          "top": 784,
+          "bottom": 805,
+          "visible": true
+        }
+      ]
+    },
+    "passed": true,
+    "source": "db44d57b48d4bbba8330b4d651b182f9fb9671fb"
+  },
+  {
+    "version": "after",
+    "scenario": "new confirmed subtitles follow tail",
+    "passed": true,
+    "source": "db44d57b48d4bbba8330b4d651b182f9fb9671fb"
+  },
+  {
+    "version": "after",
+    "scenario": "real wheel history reading stays anchored through incoming text and mode change",
+    "reading": {
+      "id": "history-1000008",
+      "offset": -69,
+      "scrollTop": 665
+    },
+    "appended": {
+      "id": "history-1000008",
+      "offset": -69,
+      "scrollTop": 665
+    },
+    "modeRead": {
+      "id": "history-1000008",
+      "offset": -0.25,
+      "scrollTop": 409
+    },
+    "passed": true,
+    "source": "db44d57b48d4bbba8330b4d651b182f9fb9671fb"
+  }
+]
