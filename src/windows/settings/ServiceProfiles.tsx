@@ -1,7 +1,7 @@
 import { consumeGuideEdit } from "../../components/first-run/guideNavigation";
 import { ProviderHelp } from "../../components/first-run/ServiceSetupHelp";
-import { testProfileConnection } from "../../lib/ipc";
-import { diagnosticCopy, connectionDiagnosticMessage, profileErrorMessage } from "../../lib/connectionDiagnostics";
+import { testProfileConnection, type ConnectionDiagnostic } from "../../lib/ipc";
+import { profileErrorMessage, diagnosticCopy } from "../../lib/connectionDiagnostics";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Icon } from "../../components/Icon";
 import { I18N, providerDisplayName } from "../../lib/i18n";
@@ -28,6 +28,7 @@ import { InlineFeedback, SettingsSection } from "./SettingsPrimitives";
 import { DestructiveConfirmation } from "./DestructiveConfirmation";
 import { AlibabaCredentialEditor } from "./AlibabaCredentialEditor";
 
+import { ConnectionCheck } from "./ConnectionCheck";
 import { saveAndSelectProfile } from "./saveAndSelectProfile";
 
 type Feedback = { tone: "success" | "error" | "info"; message: string };
@@ -67,6 +68,7 @@ export function ServiceProfiles({
   const [nameDraft, setNameDraft] = useState(activeProfile?.name ?? "");
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [diagnostic, setDiagnostic] = useState<{ profileId: string; result: ConnectionDiagnostic | null; error: string | null } | null>(null);
   const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation>(null);
   const [renderedProfile, setRenderedProfile] = useState({
     id: activeProfile?.id,
@@ -303,32 +305,16 @@ export function ServiceProfiles({
               </span>
             )}
           </div>
-          {!embedded && <div className="credential-panel">
-            <button
-              type="button"
-              className="settings-button settings-button--quiet"
-              disabled={mutationsDisabled}
-              onClick={() => {
-                setPendingAction("test-connection");
-                setFeedback(null);
-                void testProfileConnection(selectedProfile.id)
-                  .then((result) => {
-                    setFeedback({ tone: "info", message: connectionDiagnosticMessage(result) });
-                  })
-                  .catch((error: unknown) => {
-                    setFeedback({ tone: "error", message: profileErrorMessage(error) });
-                  })
-                  .finally(() => setPendingAction(null));
-              }}
-            >
-              {pendingAction === "test-connection" ? diagnosticCopy().testing : diagnosticCopy().test}
-            </button>
-            <small>{diagnosticCopy().note}</small>
-            <details>
-              <summary>{diagnosticCopy().help}</summary>
-              <p>{diagnosticCopy().details}</p>
-            </details>
-          </div>}
+
+          {!embedded && <ConnectionCheck result={diagnostic?.profileId === selectedProfile.id ? diagnostic.result : null} error={diagnostic?.profileId === selectedProfile.id ? diagnostic.error : null} pending={pendingAction === "test-connection"} disabled={mutationsDisabled} onCheck={() => {
+            const profileId = selectedProfile.id;
+            setPendingAction("test-connection"); onPendingChange?.(true); setDiagnostic(null);
+            void testProfileConnection(profileId)
+              .then(result => setDiagnostic({ profileId, result, error: null }))
+              .catch((error: unknown) => setDiagnostic({ profileId, result: null, error: profileErrorMessage(error) }))
+              .finally(() => { setPendingAction(null); onPendingChange?.(false); });
+          }} />}
+
           <SelectedCredentialEditor
             key={selectedProfile.id}
             profile={selectedProfile}
@@ -370,10 +356,10 @@ export function ServiceProfiles({
               }}
             >
               <div className="settings-field">
-                <label htmlFor="profile-name">{I18N.settings.profileName}</label>
+                <label htmlFor={`profile-name-${selectedProfile.id}`}>{I18N.settings.profileName}</label>
                 <span className="settings-field__inline">
                   <input
-                    id="profile-name"
+                    id={`profile-name-${selectedProfile.id}`}
                     value={nameDraft}
                     maxLength={64}
                     disabled={mutationsDisabled}
@@ -397,6 +383,8 @@ export function ServiceProfiles({
                 </span>
               </div>
             </form>
+          </details>}
+          {!embedded && <div className="service-danger-zone">
             <button
               type="button"
               className="settings-link settings-link--danger"
@@ -415,7 +403,7 @@ export function ServiceProfiles({
                   onConfirm={() => void confirmProfileDelete()}
                 />
               )}
-          </details>}
+          </div>}
         </div>
       ) : (
         <div className="services-home">
