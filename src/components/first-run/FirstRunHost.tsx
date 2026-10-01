@@ -52,7 +52,11 @@ export function FirstRunHost() {
     captionVisible: !status.synthetic && status.captionVisible,
   };
   const automatic = initialized && profile?.credentialState === "missing" && !later;
-  const visible = open || immersive || automatic;
+  // Missing credentials start the flow; they must not control its lifetime.
+  // Saving the embedded form makes them ready before the user reaches audio/captions.
+  const [automaticStarted, setAutomaticStarted] = useState(false);
+  if (automatic && !automaticStarted) setAutomaticStarted(true);
+  const visible = open || immersive || (automaticStarted && !later);
   const close = () => {
     setOpen(false); setImmersive(false); setLater(true); setFeedback("");
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch { /* dismissal still works this run */ }
