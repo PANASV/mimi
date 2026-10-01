@@ -276,6 +276,8 @@ export function appDesktopShortcutCommands(): Promise<DesktopShortcutCommands | 
 export interface ConnectionDiagnostic {
   credential: "present" | "missing" | "unavailable" | "invalid";
   network: "reachable" | "timeout" | "unreachable" | "notTested";
+  /** OpenAI-compatible profiles only: real end-to-end result per stage. */
+  probe?: { speech: string; translation: string };
 }
 export function testProfileConnection(profileId: string): Promise<ConnectionDiagnostic> {
   return invoke("profile_test_connection", { profileId });

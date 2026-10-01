@@ -18,6 +18,12 @@ const copy = {
     help: "Still having trouble?",
     details: "On supported Debian/Ubuntu desktops, the Mimi .deb package lets the package manager provide password storage. AppImage needs an existing desktop password store. Your desktop session must be unlocked. This check sends no key: HTTP 401/403 means the server is reachable, not that authentication succeeded. Azure, DeepLX and UI-test mode skip the network check.",
     note: "Checks secure storage and server reachability without sending credentials or audio. Does not start a translation session or verify authentication.",
+    probeNote: "Sends one tiny real request with your saved key: 0.5 s of silence for speech recognition and one word for translation. A negligible charge may apply.",
+    colon: ": ",
+    speech: "Speech recognition",
+    translation: "Translation",
+    stage: { ok: "OK", timeout: "timed out", unreachable: "could not connect (check the base URL, network and proxy)", invalidEndpoint: "invalid base URL", invalidModel: "invalid model name", invalidResponse: "unexpected response (check that this URL supports this endpoint)" },
+    rejected: (code: string) => `rejected, HTTP ${code}${code === "401" || code === "403" ? " (check the API key)" : code === "402" ? " (insufficient balance)" : code === "404" ? " (endpoint or model not found)" : code === "429" ? " (rate limited)" : ""}`,
   },
   zh: {
     storage: "Mimi 暂时无法安全保存或读取密钥。请允许系统解锁密码存储的提示，然后点击“测试连接”重试。密钥不会以明文保存。",
@@ -35,6 +41,12 @@ const copy = {
     help: "仍然遇到问题？",
     details: "受支持的 Debian/Ubuntu 桌面使用 Mimi .deb 安装包时，软件包管理器会提供密码存储；AppImage 需要桌面已有密码存储，桌面会话仍需解锁。此检查不发送密钥，HTTP 401/403 表示服务器可达，不代表认证成功。Azure、DeepLX 和界面测试模式跳过网络检查。",
     note: "检查安全存储和服务器可达性，不发送凭据或音频，不启动翻译会话，也不验证认证。",
+    probeNote: "会用已保存的 Key 发送一次极小的真实请求：0.5 秒静音用于测试语音识别，一个单词用于测试翻译。可能产生极少费用。",
+    colon: "：",
+    speech: "语音识别",
+    translation: "翻译",
+    stage: { ok: "正常", timeout: "超时", unreachable: "无法连接（请检查地址、网络和代理）", invalidEndpoint: "地址无效", invalidModel: "模型名无效", invalidResponse: "返回格式异常（请确认该地址支持此接口）" },
+    rejected: (code: string) => `被拒绝，HTTP ${code}${code === "401" || code === "403" ? "（请检查 API Key）" : code === "402" ? "（余额不足）" : code === "404" ? "（接口或模型不存在）" : code === "429" ? "（请求过于频繁）" : ""}`,
   },
   ja: {
     storage: "Mimi がキーを安全に読み書きできません。システムのパスワードストレージ解除を許可して再テストしてください。キーは平文で保存しません。",
@@ -52,11 +64,27 @@ const copy = {
     help: "問題が続く場合",
     details: "対応する Debian/Ubuntu デスクトップでは .deb のパッケージマネージャーがパスワードストレージを提供します。AppImage は既存のストレージが必要です。デスクトップセッションの解除が必要です。キーなしの HTTP 401/403 は到達性のみを示します。Azure、DeepLX と UI テストではネットワーク確認を行いません。",
     note: "認証情報や音声を送信せずストレージと到達性を確認します。翻訳セッションの開始や認証確認は行いません。",
+    probeNote: "保存したキーで極小の実リクエストを送ります：音声認識に 0.5 秒の無音、翻訳に 1 単語。わずかな料金が発生する場合があります。",
+    colon: "：",
+    speech: "音声認識",
+    translation: "翻訳",
+    stage: { ok: "正常", timeout: "タイムアウト", unreachable: "接続できません（URL、ネットワーク、プロキシを確認）", invalidEndpoint: "URL が無効", invalidModel: "モデル名が無効", invalidResponse: "応答形式が不正（この URL がこのエンドポイントに対応しているか確認）" },
+    rejected: (code: string) => `拒否、HTTP ${code}${code === "401" || code === "403" ? "（API キーを確認）" : code === "402" ? "（残高不足）" : code === "404" ? "（エンドポイントまたはモデルが見つかりません）" : code === "429" ? "（レート制限）" : ""}`,
   },
 };
 export function diagnosticCopy() { return copy[effectiveUiLanguage()]; }
+function probeStageText(value: string): string {
+  const labels = diagnosticCopy();
+  const rejected = /^rejected:(\d{3})$/.exec(value);
+  if (rejected) return labels.rejected(rejected[1]);
+  return labels.stage[value as keyof typeof labels.stage] ?? labels.stage.invalidResponse;
+}
+
 export function connectionDiagnosticMessage(result: ConnectionDiagnostic): string {
   const labels = diagnosticCopy();
+  if (result.probe) {
+    return `${labels.speech}${labels.colon}${probeStageText(result.probe.speech)} · ${labels.translation}${labels.colon}${probeStageText(result.probe.translation)}`;
+  }
   return `${result.credential === "unavailable" ? labels.storage : labels[result.credential]} ${labels[result.network]} ${labels.authentication}`;
 }
 const deepLXErrors = {

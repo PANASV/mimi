@@ -36,3 +36,15 @@ it("shows a short endpoint correction instead of the whole provider description"
     expect(message).not.toContain("Audio 3.0");
   }
 });
+
+it("renders OpenAI-compatible probe results per stage without raw server text", () => {
+  const message = connectionDiagnosticMessage({
+    credential: "present",
+    network: "reachable",
+    probe: { speech: "ok", translation: "rejected:401" },
+  });
+  expect(message).toContain("401");
+  expect(message).not.toContain("rejected:");
+  expect(connectionDiagnosticMessage({ credential: "present", network: "unreachable", probe: { speech: "bogus-label", translation: "timeout" } }))
+    .not.toContain("bogus-label");
+});
