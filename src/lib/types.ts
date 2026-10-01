@@ -108,11 +108,21 @@ export type ServiceProvider =
   | "tencentCloud"
   | "baiduTranslate"
   | "xAIRealtime"
-  | "deepLX";
+  | "deepLX"
+  | "openAICompatible";
 
 /** Write-only payload sent to the native secure credential store. */
 export type ProviderCredentialsInput =
   | { kind: "deepLX"; asrApiKey: string; endpoint: string; token: string }
+  | {
+      kind: "openAICompatible";
+      asrBaseUrl: string;
+      asrApiKey: string;
+      asrModel: string;
+      mtBaseUrl: string;
+      mtApiKey: string;
+      mtModel: string;
+    }
   | { kind: "apiKey"; apiKey: string }
   | {
       kind: "azureOpenAI";

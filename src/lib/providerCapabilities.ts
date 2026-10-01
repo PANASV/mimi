@@ -21,12 +21,14 @@ export const SERVICE_PROVIDERS: readonly ServiceProvider[] = [
   "baiduTranslate",
   "xAIRealtime",
   "deepLX",
+  "openAICompatible",
 ];
 
 const PROVIDER_CAPABILITIES: Readonly<
   Record<ServiceProvider, ProviderCapabilities>
 > = {
   deepLX: { sourceLanguages: SOURCE_LANGUAGE_QUICK_CASES, targetLanguages: ["zh", "en", "ja"], translationModes: ["turbo"] },
+  openAICompatible: { sourceLanguages: SOURCE_LANGUAGE_QUICK_CASES, targetLanguages: ["zh", "en", "ja"], translationModes: ["turbo"] },
   alibabaCloud: {
     sourceLanguages: SOURCE_LANGUAGE_QUICK_CASES,
     targetLanguages: ["original", "zh", "en", "ja"],

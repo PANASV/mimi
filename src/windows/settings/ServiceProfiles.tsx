@@ -7,6 +7,7 @@ import { SERVICE_PROVIDERS, subtitlePreferencesChanged } from "../../lib/provide
 import {
   buildProviderCredentials,
   deepLXEndpointIsValid,
+  endpointFieldsForProvider,
   credentialEditorStateAfterDeleteRequest,
   credentialFieldsForProvider,
   emptyCredentialDraft,
@@ -483,6 +484,7 @@ function CredentialEditor({
   const [draft, setDraft] = useState<CredentialDraft>(emptyCredentialDraft);
   const [editingSavedCredential, setEditingSavedCredential] = useState(false);
   const [endpointInvalid, setEndpointInvalid] = useState(false);
+  const [invalidEndpointField, setInvalidEndpointField] = useState<CredentialFieldName | null>(null);
   const endpointRef = useRef<HTMLInputElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -504,11 +506,16 @@ function CredentialEditor({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!credentials) return;
-    if (profile.provider === "deepLX" && !deepLXEndpointIsValid(draft.endpoint)) {
+    const invalidEndpoint = endpointFieldsForProvider(profile.provider).find(
+      (field) => !endpointValueIsAcceptable(field, draft[field]),
+    );
+    if (invalidEndpoint) {
+      setInvalidEndpointField(invalidEndpoint);
       setEndpointInvalid(true);
       endpointRef.current?.focus();
       return;
     }
+    setInvalidEndpointField(null);
     setEndpointInvalid(false);
     setEditingSavedCredential(true);
     // Keep only the user's current unsaved draft on failure. Never read back
@@ -598,33 +605,35 @@ function CredentialEditor({
       )}
 
       {profile.provider === "deepLX" && <p className="settings-caption">{I18N.settings.deepLXNote}</p>}
+      {profile.provider === "openAICompatible" && <p className="settings-caption">{I18N.settings.openAICompatibleNote}</p>}
       <form className="credential-form" onSubmit={handleSubmit}>
         <div className="credential-form__fields">
           {credentialFieldsForProvider(profile.provider).map((field) => {
             const copy = credentialFieldCopy(field, profile.provider);
             const fieldId = `${inputId}-${field}`;
+            const isInvalid = endpointInvalid && (invalidEndpointField ?? "endpoint") === field;
             return (
               <label className="settings-field" htmlFor={fieldId} key={field}>
                 <span>{copy.label}</span>
                 <input
                   id={fieldId}
-                  ref={profile.provider === "deepLX" && field === "endpoint" ? endpointRef : undefined}
-                  aria-invalid={field === "endpoint" && endpointInvalid ? true : undefined}
+                  ref={isInvalid ? endpointRef : undefined}
+                  aria-invalid={isInvalid ? true : undefined}
                   type={copy.secret ? "password" : "text"}
                   inputMode={field === "appId" ? "numeric" : undefined}
                   value={draft[field]}
                   autoComplete="new-password"
                   spellCheck={false}
-                  aria-describedby={field === "endpoint" && endpointInvalid ? `${fieldId}-error ${noteId}` : noteId}
+                  aria-describedby={isInvalid ? `${fieldId}-error ${noteId}` : noteId}
                   disabled={disabled}
                   placeholder={copy.placeholder}
                   onChange={(event) => {
                     const value = event.target.value;
                     setDraft((current) => ({ ...current, [field]: value }));
-                    if (field === "endpoint" && endpointInvalid) setEndpointInvalid(!deepLXEndpointIsValid(value));
+                    if (isInvalid) setEndpointInvalid(!endpointValueIsAcceptable(field, value));
                   }}
                 />
-                {field === "endpoint" && endpointInvalid && <span id={`${fieldId}-error`} role="alert" className="credential-unavailable">{I18N.settings.deepLXEndpointInvalid}</span>}
+                {isInvalid && <span id={`${fieldId}-error`} role="alert" className="credential-unavailable">{profile.provider === "openAICompatible" ? I18N.settings.openAICompatibleEndpointInvalid : I18N.settings.deepLXEndpointInvalid}</span>}
               </label>
             );
           })}
@@ -663,6 +672,12 @@ function CredentialEditor({
   );
 }
 
+/** Optional URL fields may stay empty; non-empty values must pass the native rules. */
+function endpointValueIsAcceptable(field: CredentialFieldName, value: string): boolean {
+  if (field === "mtBaseUrl" && !value.trim()) return true;
+  return deepLXEndpointIsValid(value);
+}
+
 function credentialFieldCopy(field: CredentialFieldName, provider: ServiceProvider): {
   label: string;
   placeholder: string;
@@ -670,7 +685,21 @@ function credentialFieldCopy(field: CredentialFieldName, provider: ServiceProvid
 } {
   switch (field) {
     case "asrApiKey":
-      return { label: I18N.settings.asrApiKey, placeholder: I18N.settings.apiKeyPlaceholder, secret: true };
+      return {
+        label: provider === "openAICompatible" ? I18N.settings.openAICompatibleAsrApiKey : I18N.settings.asrApiKey,
+        placeholder: I18N.settings.apiKeyPlaceholder,
+        secret: true,
+      };
+    case "asrBaseUrl":
+      return { label: I18N.settings.openAICompatibleAsrBaseUrl, placeholder: "https://openrouter.ai/api/v1", secret: false };
+    case "asrModel":
+      return { label: I18N.settings.openAICompatibleAsrModel, placeholder: "qwen/qwen3-asr-1.7b", secret: false };
+    case "mtBaseUrl":
+      return { label: I18N.settings.openAICompatibleMtBaseUrl, placeholder: "https://openrouter.ai/api/v1", secret: false };
+    case "mtApiKey":
+      return { label: I18N.settings.openAICompatibleMtApiKey, placeholder: I18N.settings.apiKeyPlaceholder, secret: true };
+    case "mtModel":
+      return { label: I18N.settings.openAICompatibleMtModel, placeholder: "deepseek/deepseek-chat", secret: false };
     case "token":
       return { label: I18N.settings.deepLXToken, placeholder: "Bearer token", secret: true };
     case "apiKey":
@@ -861,6 +890,8 @@ function providerDescription(provider: ServiceProvider): string {
       return I18N.settings.providerBaiduTranslateDescription;
     case "deepLX":
       return I18N.settings.providerDeepLXDescription;
+    case "openAICompatible":
+      return I18N.settings.providerOpenAICompatibleDescription;
     case "xAIRealtime":
       return I18N.settings.providerXAIDescription;
   }

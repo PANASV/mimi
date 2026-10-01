@@ -488,7 +488,17 @@ const SETTINGS_ZH = {
   deepLXEndpointInvalid: "请输入有效 HTTPS 地址，或 localhost 的 HTTP 地址；不要包含用户名、密码、? 查询参数或 # 片段。",
   deepLXEndpoint: "文字翻译 Endpoint（DeepLX）",
   deepLXToken: "Bearer token（选填）",
+  openAICompatibleNote: "适用于 OpenRouter 等 OpenAI 兼容服务。系统音频按句切分后发送到「语音识别地址」的 /audio/transcriptions；识别文本发送到「翻译地址」的 /chat/completions。翻译地址和 Key 留空时沿用语音识别的设置。使用 HTTPS，或本机 HTTP。",
+  openAICompatibleAsrBaseUrl: "语音识别地址（Base URL）",
+  openAICompatibleAsrApiKey: "语音识别 API Key",
+  openAICompatibleAsrModel: "语音识别模型",
+  openAICompatibleMtBaseUrl: "翻译地址（选填，默认同上）",
+  openAICompatibleMtApiKey: "翻译 API Key（选填，默认同上）",
+  openAICompatibleMtModel: "翻译模型",
+  openAICompatibleEndpointInvalid: "请输入有效的 Base URL，例如 https://openrouter.ai/api/v1；需为 HTTPS（本机可用 HTTP），不要包含用户名、密码、? 查询参数或 # 片段。",
+  providerOpenAICompatible: "OpenAI 兼容（自定义地址）",
   providerDeepLXDescription: "Audio 3.0 识别系统音频，DeepLX 翻译文字。不是官方 DeepL API。",
+  providerOpenAICompatibleDescription: "用你自己的 OpenRouter 或其他 OpenAI 兼容地址完成语音识别和翻译，无需注册各家官方 API。",
   deepLXNote: "系统音频发送至阿里云 Audio 3.0；识别文本发送至你填写的 DeepLX 地址。需要单独配置语音识别 Key。只支持 DeepLX /translate JSON 和可选 Bearer token；私服认证请向管理员确认。使用 HTTPS，或本机 HTTP。",
   azureEndpointPlaceholder: "https://资源名.openai.azure.com",
   deploymentName: "翻译部署名称",
@@ -749,7 +759,17 @@ const SETTINGS_EN = {
   deepLXEndpointInvalid: "Enter a valid HTTPS URL, or HTTP on localhost. Remove URL username/password, ? query parameters and # fragments.",
   deepLXEndpoint: "Text translation endpoint (DeepLX)",
   deepLXToken: "Bearer token (optional)",
+  openAICompatibleNote: "For OpenRouter and other OpenAI-compatible services. System audio is split into utterances and sent to /audio/transcriptions at the speech recognition URL; recognized text goes to /chat/completions at the translation URL. Empty translation URL and key reuse the recognition settings. Use HTTPS, or HTTP on localhost.",
+  openAICompatibleAsrBaseUrl: "Speech recognition base URL",
+  openAICompatibleAsrApiKey: "Speech recognition API key",
+  openAICompatibleAsrModel: "Speech recognition model",
+  openAICompatibleMtBaseUrl: "Translation base URL (optional, defaults to above)",
+  openAICompatibleMtApiKey: "Translation API key (optional, defaults to above)",
+  openAICompatibleMtModel: "Translation model",
+  openAICompatibleEndpointInvalid: "Enter a valid base URL such as https://openrouter.ai/api/v1. Use HTTPS (HTTP only on localhost) without username/password, ? query or # fragment.",
+  providerOpenAICompatible: "OpenAI-compatible (custom)",
   providerDeepLXDescription: "Audio 3.0 recognizes system audio; DeepLX translates text. Not the official DeepL API.",
+  providerOpenAICompatibleDescription: "Recognize and translate with your own OpenRouter or other OpenAI-compatible endpoint; no vendor-specific account needed.",
   deepLXNote: "System audio goes to Alibaba Audio 3.0; recognized text goes to your DeepLX endpoint. A separate speech recognition key is required. Supports DeepLX /translate JSON and an optional Bearer token; confirm private server authentication with its administrator. Use HTTPS, or HTTP on localhost.",
   azureEndpointPlaceholder: "https://resource.openai.azure.com",
   deploymentName: "Translation Deployment",
@@ -1007,7 +1027,17 @@ const SETTINGS_JA = {
   deepLXEndpointInvalid: "有効な HTTPS URL または localhost の HTTP URL を入力してください。ユーザー名・パスワード、? クエリ、# フラグメントは使用できません。",
   deepLXEndpoint: "文字翻訳エンドポイント（DeepLX）",
   deepLXToken: "Bearer token（任意）",
+  openAICompatibleNote: "OpenRouter など OpenAI 互換サービス向けです。システム音声を文ごとに分割し、音声認識 URL の /audio/transcriptions に送信します。認識テキストは翻訳 URL の /chat/completions に送信します。翻訳 URL とキーが空の場合は音声認識の設定を使います。HTTPS またはローカル HTTP を使用してください。",
+  openAICompatibleAsrBaseUrl: "音声認識 Base URL",
+  openAICompatibleAsrApiKey: "音声認識 API キー",
+  openAICompatibleAsrModel: "音声認識モデル",
+  openAICompatibleMtBaseUrl: "翻訳 Base URL（任意、既定は上と同じ）",
+  openAICompatibleMtApiKey: "翻訳 API キー（任意、既定は上と同じ）",
+  openAICompatibleMtModel: "翻訳モデル",
+  openAICompatibleEndpointInvalid: "https://openrouter.ai/api/v1 のような有効な Base URL を入力してください。HTTPS（ローカルのみ HTTP）で、ユーザー名・パスワード、? クエリ、# フラグメントは使用できません。",
+  providerOpenAICompatible: "OpenAI 互換（カスタム）",
   providerDeepLXDescription: "Audio 3.0 がシステム音声を認識し、DeepLX が文字を翻訳します。公式 DeepL API ではありません。",
+  providerOpenAICompatibleDescription: "OpenRouter など任意の OpenAI 互換エンドポイントで音声認識と翻訳を行います。各社公式 API の登録は不要です。",
   deepLXNote: "システム音声は Alibaba Audio 3.0 に、認識テキストは指定した DeepLX URL に送信します。音声認識キーが別途必要です。DeepLX /translate JSON と任意の Bearer token に対応します。独自サーバーの認証は管理者に確認してください。HTTPS またはローカル HTTP を使用してください。",
   azureEndpointPlaceholder: "https://resource.openai.azure.com",
   deploymentName: "翻訳デプロイ名",
@@ -1096,6 +1126,8 @@ export function providerDisplayName(provider: ServiceProvider): string {
       return I18N.settings.providerBaiduTranslate;
     case "deepLX":
       return "DeepLX (Audio 3.0 ASR)";
+    case "openAICompatible":
+      return I18N.settings.providerOpenAICompatible;
     case "xAIRealtime":
       return I18N.settings.providerXAI;
   }

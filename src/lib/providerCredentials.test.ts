@@ -5,6 +5,7 @@ import {
   credentialEditorStateAfterDeleteRequest,
   credentialFieldsForProvider,
   emptyCredentialDraft,
+  endpointFieldsForProvider,
 } from "./providerCredentials";
 
 describe("provider credential payloads", () => {
@@ -76,6 +77,30 @@ it("keeps DeepLX recognition credentials separate and makes its token optional",
   expect(buildProviderCredentials("deepLX", { ...draft, asrApiKey: "" })).toBeNull();
   expect(buildProviderCredentials("deepLX", { ...draft, endpoint: "" })).toBeNull();
   expect(buildProviderCredentials("deepLX", { ...draft, token: " synthetic-token " })?.kind).toBe("deepLX");
+});
+
+it("builds OpenAI-compatible credentials with optional translation URL and key", () => {
+  const draft = {
+    ...emptyCredentialDraft(),
+    asrBaseUrl: " https://openrouter.ai/api/v1 ",
+    asrApiKey: " synthetic-key ",
+    asrModel: "qwen/qwen3-asr-1.7b",
+    mtModel: "deepseek/deepseek-chat",
+  };
+  expect(credentialFieldsForProvider("openAICompatible")).toEqual(["asrBaseUrl", "asrApiKey", "asrModel", "mtModel", "mtBaseUrl", "mtApiKey"]);
+  expect(endpointFieldsForProvider("openAICompatible")).toEqual(["asrBaseUrl", "mtBaseUrl"]);
+  expect(buildProviderCredentials("openAICompatible", draft)).toEqual({
+    kind: "openAICompatible",
+    asrBaseUrl: "https://openrouter.ai/api/v1",
+    asrApiKey: "synthetic-key",
+    asrModel: "qwen/qwen3-asr-1.7b",
+    mtBaseUrl: "",
+    mtApiKey: "",
+    mtModel: "deepseek/deepseek-chat",
+  });
+  for (const required of ["asrBaseUrl", "asrApiKey", "asrModel", "mtModel"] as const) {
+    expect(buildProviderCredentials("openAICompatible", { ...draft, [required]: "" }), required).toBeNull();
+  }
 });
 
  it("rejects unsafe or invalid DeepLX endpoints before credential submission", () => {

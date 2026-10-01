@@ -146,7 +146,7 @@ describe("provider capabilities", () => {
   });
 
   it("registers every built-in provider exactly once", () => {
-    expect(new Set(SERVICE_PROVIDERS).size).toBe(9);
+    expect(new Set(SERVICE_PROVIDERS).size).toBe(10);
     expect(SERVICE_PROVIDERS).toEqual([
       "alibabaCloud",
       "openAIRealtime",
@@ -157,6 +157,7 @@ describe("provider capabilities", () => {
       "baiduTranslate",
       "xAIRealtime",
       "deepLX",
+      "openAICompatible",
     ]);
   });
 
