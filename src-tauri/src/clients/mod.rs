@@ -6,6 +6,8 @@ pub mod baidu_translate_client;
 pub mod gemini_live_client;
 pub mod high_quality_client;
 pub mod live_translate_client;
+pub mod openai_compatible_asr_client;
+pub mod openai_compatible_chat_client;
 pub mod openai_realtime_client;
 pub mod provider_events;
 pub mod qwen_mt_client;
