@@ -1,0 +1,316 @@
+[
+  {
+    "version": "47",
+    "theme": "light",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(250, 250, 250)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(253, 253, 252)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 243)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "47",
+    "theme": "dark",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(11, 11, 11)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(22, 22, 22)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(17, 17, 17)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "47",
+    "theme": "light",
+    "scenario": "help",
+    "body": {
+      "background": "rgb(250, 250, 250)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(253, 253, 252)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 243)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": {
+      "background": "rgba(40, 40, 36, 0.16)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "help": {
+      "background": "rgb(255, 254, 250)",
+      "color": "rgb(38, 38, 36)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "overflow": false
+  },
+  {
+    "version": "58",
+    "theme": "light",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(250, 250, 250)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(253, 253, 252)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 243)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "58",
+    "theme": "dark",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(11, 11, 11)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(22, 22, 22)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(17, 17, 17)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "58",
+    "theme": "light",
+    "scenario": "help",
+    "body": {
+      "background": "rgb(250, 250, 250)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(253, 253, 252)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 243)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": {
+      "background": "rgba(40, 40, 36, 0.16)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "help": {
+      "background": "rgb(255, 254, 250)",
+      "color": "rgb(38, 38, 36)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "overflow": false
+  },
+  {
+    "version": "new",
+    "theme": "light",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 244)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "new",
+    "theme": "dark",
+    "scenario": "settings",
+    "body": {
+      "background": "rgb(11, 11, 11)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(22, 22, 22)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(17, 17, 17)",
+      "color": "rgb(244, 244, 244)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": null,
+    "help": null,
+    "overflow": false
+  },
+  {
+    "version": "new",
+    "theme": "light",
+    "scenario": "help",
+    "body": {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "canvas": {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "panel": {
+      "background": "rgb(244, 244, 244)",
+      "color": "rgb(23, 23, 23)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "backdrop": {
+      "background": "rgba(40, 40, 40, 0.16)",
+      "color": "rgb(0, 0, 0)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "help": {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(38, 38, 38)",
+      "opacity": "1",
+      "filter": "none",
+      "backdropFilter": "none"
+    },
+    "overflow": false
+  },
+  {
+    "version": "58",
+    "scenario": "auto-after-real-form-save",
+    "visible": false,
+    "body": "mimi\n设置\n字幕\n翻译服务\n通用\n保存与导出\n实时字幕\n尚未启动\n\n⌘⇧Space\n\n翻译服务\n\n选好服务，就可以开始听了。\n\n使用引导\n翻译服务\n1 个配置\n添加配置\nAlibaba Cloud\nAlibaba Cloud\n凭证已保存\n使用中\n\n点选已配置的服务即可切换。凭据仅保存在系统安全存储中。"
+  },
+  {
+    "version": "new",
+    "scenario": "auto-after-real-form-save",
+    "visible": true,
+    "body": "mimi\n设置\n字幕\n翻译服务\n通用\n保存与导出\n实时字幕\n尚未启动\n\n⌘⇧Space\n\n翻译服务\n\n选好服务，就可以开始听了。\n\n使用引导\n翻译服务\n1 个配置\n添加配置\nAlibaba Cloud\nAlibaba Cloud\n凭证已保存\n使用中\n\n点选已配置的服务即可切换。凭据仅保存在系统安全存储中。\n\nmimi 初次使用\n稍后设置\n1\n连接服务\n2\n播放声音\n3\n显示字幕\n先连接一个翻译服务\n\n在这里填好，保存后继续。\n\n翻译服务\nAlibaba Cloud\n⌄\n翻译服务\n凭证已保存\n使用中\n更新凭证\n移除凭证\n高级设置\n\n凭据保存在系统安全存储中。\n\n凭证已安全保存。\n\n官方开通与获取密钥 ↗\n\n配置已保存。\n\n需要哪些信息？费用怎么算？\n← 返回\n继续 →"
+  },
+  {
+    "version": "new",
+    "scenario": "automatic real form save -> continue audio -> captions",
+    "passed": true
+  }
+]
