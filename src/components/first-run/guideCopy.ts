@@ -1,5 +1,6 @@
 import { effectiveUiLanguage } from "../../lib/i18n";
 const copy: Record<string, [string, string]> = {
+  "使用引导": ["Getting started", "使い方"],
   "在这里填好，保存后继续。": ["Enter your details here, then save to continue.", "ここで入力し、保存して次へ進みます。"],
   "字幕在浮窗里，这里可以调整观看方式。": ["Captions appear in a floating window. Choose how you watch here.", "字幕はフローティングウィンドウに表示されます。ここで表示を切り替えられます。"],
   "打开权限设置": ["Open access settings", "権限の設定を開く"],

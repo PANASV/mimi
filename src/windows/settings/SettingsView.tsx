@@ -323,8 +323,11 @@ export function SettingsView() {
       <div className="settings-console__scroll" ref={contentScrollRef}>
         <div className="settings-console__frame">
           <header className="settings-page-header">
-            <h1>{categories.find((category) => category.id === activeCategory)?.label}</h1>
-            <p>{pageDescriptions[activeCategory]}</p>
+            <div className="settings-page-heading">
+              <h1>{categories.find((category) => category.id === activeCategory)?.label}</h1>
+              <p>{pageDescriptions[activeCategory]}</p>
+            </div>
+            <div id="mimi-guide-entry" className="settings-guide-entry" />
           </header>
           <div className="settings-layout">
             {activeCategory === "subtitles" && (

@@ -2114,3 +2114,8 @@
 .connection-check summary{cursor:pointer}
 .connection-check details p{margin:8px 0;line-height:1.65;max-width:55ch}
 .service-danger-zone{margin-top:24px;padding-top:16px;border-top:1px solid var(--settings-border)}
+
+.settings-page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.settings-page-heading{min-width:0}
+.settings-guide-entry{flex-shrink:0;padding-top:6px}
+.settings-guide-entry .first-run-launch{position:static;font:inherit;font-size:12px;padding:6px 10px;color:var(--settings-text-muted);border:1px solid var(--settings-border);border-radius:8px;background:var(--settings-surface)}

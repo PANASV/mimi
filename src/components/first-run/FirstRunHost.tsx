@@ -2,6 +2,7 @@ import "./first-run.css";
 import { guideFocusControls } from "./guideFocus";
 import { guideText as t } from "./guideCopy";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FirstRunVisualCandidate } from "./FirstRunVisualCandidate";
 import { providerDisplayName } from "../../lib/i18n";
 import { isTauri } from "../../lib/ipc";
@@ -36,6 +37,11 @@ export function FirstRunHost() {
   const formPending = useRef(false);
   const operationPending = useRef(false);
   const [revision, setRevision] = useState(0);
+  const [entryTarget, setEntryTarget] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setEntryTarget(document.getElementById("mimi-guide-entry")));
+    return () => cancelAnimationFrame(frame);
+  }, []);
   const modal = useRef<HTMLDivElement>(null);
   const launch = useRef<HTMLButtonElement>(null);
   const evidence: GuideEvidence = {
@@ -119,8 +125,9 @@ export function FirstRunHost() {
     if (!isTauri) { setFeedback(t("浏览器仅预览，不更改原生沉浸状态。")); return; }
     await useStore.getState().saveSettings({ subtitleBlendsWithBackground: false });
   });
+  const launchButton = <button ref={launch} className="first-run-launch settings-button settings-button--quiet settings-button--compact" onClick={() => { setOpen(true); setImmersive(false); setRevision(value => value + 1); }}>{t("使用引导")}</button>;
   return <>
-    <button ref={launch} className="first-run-launch" onClick={() => { setOpen(true); setImmersive(false); setRevision(value => value + 1); }}>{t("初次使用？")}</button>
+    {entryTarget ? createPortal(launchButton, entryTarget) : launchButton}
     {visible && <div className="first-run-backdrop" onClick={event => { if (event.target === event.currentTarget) close(); }}>
       <div ref={modal} role="dialog" aria-modal="true" aria-label={t("mimi 初次使用")} aria-busy={busy || formBusy} onKeyDown={event => {
         if (event.key === "Escape") { event.preventDefault(); close(); }
