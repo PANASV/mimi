@@ -39,6 +39,13 @@ impl OpenAICompatibleChatClient {
         })
     }
 
+    /// Connection test: translates one short word to verify URL, key and model.
+    pub async fn probe(&self) -> Result<(), OpenAICompatibleError> {
+        self.translate("Hello", Some(SourceLanguage::English))
+            .await
+            .map(|_| ())
+    }
+
     pub async fn translate(
         &self,
         text: &str,

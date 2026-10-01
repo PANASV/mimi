@@ -1073,6 +1073,9 @@ pub async fn profile_test_connection(
         return Ok(serde_json::json!({"credential": storage, "network": "notTested"}));
     }
     use crate::core::provider::ProviderKind;
+    if profile.provider == ProviderKind::OpenAICompatible {
+        return Ok(probe_openai_compatible(&state, &profile_id, storage).await);
+    }
     let endpoint = match profile.provider {
         ProviderKind::AlibabaCloud => "https://dashscope.aliyuncs.com/api-ws/v1/realtime",
         ProviderKind::OpenAIRealtime => "https://api.openai.com/v1/realtime/translations",
@@ -1081,8 +1084,9 @@ pub async fn profile_test_connection(
         ProviderKind::TencentCloud => "https://asr.cloud.tencent.com/",
         ProviderKind::BaiduTranslate => "https://aip.baidubce.com/",
         ProviderKind::XAIRealtime => "https://api.x.ai/v1/realtime",
-        // Azure, DeepLX and custom relays use private endpoints stored with
-        // the credentials; this check never reads them.
+        // Azure and DeepLX use private endpoints stored with the
+        // credentials; this check never reads them. OpenAI-compatible
+        // profiles are probed above.
         ProviderKind::AzureOpenAIRealtime
         | ProviderKind::DeepLX
         | ProviderKind::OpenAICompatible => {
@@ -1098,6 +1102,71 @@ pub async fn profile_test_connection(
         Err(_) => "unreachable",
     };
     Ok(serde_json::json!({"credential": storage, "network": network}))
+}
+
+/// Explicit, user-initiated end-to-end check for a custom relay: 0.5 s of
+/// silence to `/audio/transcriptions` and one word to `/chat/completions`.
+/// Both requests carry the saved key and may incur a negligible charge.
+/// The result is content-free (stage status labels only).
+async fn probe_openai_compatible(
+    state: &tauri::State<'_, AppState>,
+    profile_id: &str,
+    storage: &'static str,
+) -> serde_json::Value {
+    use crate::clients::openai_compatible_asr_client::OpenAICompatibleASRClient;
+    use crate::clients::openai_compatible_chat_client::OpenAICompatibleChatClient;
+    use crate::core::credentials::ProviderCredentials;
+    use crate::core::models::{SourceLanguage, TargetLanguage};
+    use crate::core::protocols::openai_compatible::{probe_label, translation_endpoint};
+
+    let not_tested = serde_json::json!({"credential": storage, "network": "notTested"});
+    let Ok(ProviderCredentials::OpenAICompatible {
+        asr_base_url,
+        asr_api_key,
+        asr_model,
+        mt_base_url,
+        mt_api_key,
+        mt_model,
+    }) = state.settings.profile_credentials(profile_id)
+    else {
+        return not_tested;
+    };
+    let (mt_base_url, mt_api_key) =
+        translation_endpoint(&asr_base_url, &asr_api_key, &mt_base_url, &mt_api_key);
+    let speech = async {
+        match OpenAICompatibleASRClient::new(
+            &asr_base_url,
+            &asr_api_key,
+            &asr_model,
+            SourceLanguage::English,
+        ) {
+            Ok(client) => client.probe().await,
+            Err(error) => Err(error),
+        }
+    };
+    let translation = async {
+        match OpenAICompatibleChatClient::new(
+            mt_base_url,
+            mt_api_key,
+            &mt_model,
+            SourceLanguage::English,
+            TargetLanguage::SimplifiedChinese,
+        ) {
+            Ok(client) => client.probe().await,
+            Err(error) => Err(error),
+        }
+    };
+    let (speech, translation) = tokio::join!(speech, translation);
+    let network = if speech.is_ok() || translation.is_ok() {
+        "reachable"
+    } else {
+        "unreachable"
+    };
+    serde_json::json!({
+        "credential": storage,
+        "network": network,
+        "probe": { "speech": probe_label(&speech), "translation": probe_label(&translation) }
+    })
 }
 
 #[tauri::command]

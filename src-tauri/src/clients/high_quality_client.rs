@@ -389,16 +389,13 @@ impl HighQualityTranslationClient {
     ) -> Result<Self, QwenMTClientError> {
         let asr = OpenAICompatibleASRClient::new(asr_base_url, asr_api_key, asr_model, source)
             .map_err(QwenMTClientError::OpenAICompatible)?;
-        let mt_base_url = if mt_base_url.trim().is_empty() {
-            asr_base_url
-        } else {
-            mt_base_url
-        };
-        let mt_api_key = if mt_api_key.trim().is_empty() {
-            asr_api_key
-        } else {
-            mt_api_key
-        };
+        let (mt_base_url, mt_api_key) =
+            crate::core::protocols::openai_compatible::translation_endpoint(
+                asr_base_url,
+                asr_api_key,
+                mt_base_url,
+                mt_api_key,
+            );
         let mt = OpenAICompatibleChatClient::new(mt_base_url, mt_api_key, mt_model, source, target)
             .map_err(QwenMTClientError::OpenAICompatible)?;
         // Reuse bounded workers, generation checks, cancellation and final

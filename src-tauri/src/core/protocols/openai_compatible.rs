@@ -118,6 +118,39 @@ pub fn model_name(value: &str) -> Result<String, OpenAICompatibleError> {
     Ok(value.to_string())
 }
 
+/// Translation URL/key fall back to the recognition values when empty.
+pub fn translation_endpoint<'a>(
+    asr_base_url: &'a str,
+    asr_api_key: &'a str,
+    mt_base_url: &'a str,
+    mt_api_key: &'a str,
+) -> (&'a str, &'a str) {
+    let base = if mt_base_url.trim().is_empty() {
+        asr_base_url
+    } else {
+        mt_base_url
+    };
+    let key = if mt_api_key.trim().is_empty() {
+        asr_api_key
+    } else {
+        mt_api_key
+    };
+    (base, key)
+}
+
+/// Content-free connection-test outcome for one stage.
+pub fn probe_label(result: &Result<(), OpenAICompatibleError>) -> String {
+    match result {
+        Ok(()) => "ok".into(),
+        Err(OpenAICompatibleError::Rejected { status, .. }) => format!("rejected:{status}"),
+        Err(OpenAICompatibleError::Timeout(_)) => "timeout".into(),
+        Err(OpenAICompatibleError::Connection(_)) => "unreachable".into(),
+        Err(OpenAICompatibleError::Endpoint) => "invalidEndpoint".into(),
+        Err(OpenAICompatibleError::Model) => "invalidModel".into(),
+        Err(_) => "invalidResponse".into(),
+    }
+}
+
 /// Wraps mono PCM16 samples in a minimal RIFF/WAVE container.
 pub fn wav_bytes(samples: &[i16], sample_rate_hz: u32) -> Vec<u8> {
     let data_len = (samples.len() * 2) as u32;
@@ -387,6 +420,30 @@ mod tests {
             r#"{"choices":[{"message":{"content":"<think>hmm</think>\n早上好"}}]}"#.as_bytes();
         assert_eq!(parse_chat_completion(body).unwrap(), "早上好");
         assert!(parse_chat_completion(br#"{"choices":[]}"#).is_err());
+    }
+
+    #[test]
+    fn translation_endpoint_falls_back_and_probe_labels_are_content_free() {
+        assert_eq!(
+            translation_endpoint("https://a/v1", "k1", " ", ""),
+            ("https://a/v1", "k1")
+        );
+        assert_eq!(
+            translation_endpoint("https://a/v1", "k1", "https://b/v1", "k2"),
+            ("https://b/v1", "k2")
+        );
+        assert_eq!(probe_label(&Ok(())), "ok");
+        assert_eq!(
+            probe_label(&Err(OpenAICompatibleError::Rejected {
+                stage: "speech",
+                status: 402
+            })),
+            "rejected:402"
+        );
+        assert_eq!(
+            probe_label(&Err(OpenAICompatibleError::Timeout("translation"))),
+            "timeout"
+        );
     }
 
     #[test]

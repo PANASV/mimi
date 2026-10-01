@@ -141,6 +141,15 @@ impl OpenAICompatibleASRClient {
         *self.terminal_error.lock().await = None;
     }
 
+    /// Connection test: uploads 0.5 s of silence to verify URL, key and model.
+    pub async fn probe(&self) -> Result<(), OpenAICompatibleError> {
+        let sample_rate = self.segmenter.lock().await.config().sample_rate_hz;
+        let silence = vec![0i16; sample_rate as usize / 2];
+        self.upload(&protocol::wav_bytes(&silence, sample_rate))
+            .await
+            .map(|_| ())
+    }
+
     async fn enqueue(&self, utterance: Utterance) -> Result<(), OpenAICompatibleError> {
         let worker = self.worker.lock().await;
         let Some(worker) = worker.as_ref() else {

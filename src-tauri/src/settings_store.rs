@@ -754,6 +754,18 @@ impl SettingsStore {
         self.delete_api_key_for_profile(&profile)
     }
 
+    /// Decoded credentials of one profile (single keychain read). Used only by
+    /// the explicit connection test; never crosses IPC.
+    pub fn profile_credentials(&self, profile_id: &str) -> Result<ProviderCredentials, String> {
+        let profile = self.profile(profile_id)?;
+        let value = self
+            .load_api_key_for_profile(&profile)
+            .map_err(|_| CREDENTIAL_STORE_UNAVAILABLE.to_string())?
+            .unwrap_or_default();
+        ProviderCredentials::decode_from_keychain(profile.provider, &value)
+            .map_err(|error| error.to_string())
+    }
+
     /// The validated configuration used to start a session. The provider is
     /// resolved natively from the active profile; credentials never cross IPC.
     pub fn configuration(&self) -> Result<LiveTranslationConfiguration, String> {
