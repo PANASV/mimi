@@ -143,6 +143,32 @@ impl TranslationClient {
                 .map(Self::HighQuality)
                 .map_err(TranslationClientError::MT);
             }
+            ProviderKind::OpenAICompatible => {
+                let ProviderCredentials::OpenAICompatible {
+                    asr_base_url,
+                    asr_api_key,
+                    asr_model,
+                    mt_base_url,
+                    mt_api_key,
+                    mt_model,
+                } = &credentials
+                else {
+                    return Err(ProviderCredentialsError::ProviderMismatch.into());
+                };
+                return HighQualityTranslationClient::new_openai_compatible(
+                    asr_base_url,
+                    asr_api_key,
+                    asr_model,
+                    mt_base_url,
+                    mt_api_key,
+                    mt_model,
+                    configuration.source_language,
+                    configuration.target_language,
+                    events,
+                )
+                .map(Self::HighQuality)
+                .map_err(TranslationClientError::MT);
+            }
             ProviderKind::AlibabaCloud => {}
         }
         // Automatic source recognition omits the transcription language on

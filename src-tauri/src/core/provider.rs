@@ -33,6 +33,8 @@ pub enum ProviderKind {
     XAIRealtime,
     #[serde(rename = "deepLX")]
     DeepLX,
+    #[serde(rename = "openAICompatible")]
+    OpenAICompatible,
 }
 
 impl ProviderKind {
@@ -47,6 +49,7 @@ impl ProviderKind {
             Self::BaiduTranslate => "baiduTranslate",
             Self::XAIRealtime => "xAIRealtime",
             Self::DeepLX => "deepLX",
+            Self::OpenAICompatible => "openAICompatible",
         }
     }
 
@@ -61,6 +64,7 @@ impl ProviderKind {
             Self::BaiduTranslate => "Baidu Translate",
             Self::XAIRealtime => "xAI Grok",
             Self::DeepLX => "DeepLX (Audio 3.0 ASR)",
+            Self::OpenAICompatible => "OpenAI-compatible (custom)",
         }
     }
 
@@ -90,7 +94,7 @@ impl ProviderKind {
             Self::OpenAIRealtime | Self::AzureOpenAIRealtime | Self::XAIRealtime => {
                 realtime_capabilities(vec![SourceLanguage::Automatic], 24_000)
             }
-            Self::DeepLX => realtime_capabilities(
+            Self::DeepLX | Self::OpenAICompatible => realtime_capabilities(
                 vec![
                     SourceLanguage::Automatic,
                     SourceLanguage::Chinese,

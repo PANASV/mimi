@@ -1081,8 +1081,11 @@ pub async fn profile_test_connection(
         ProviderKind::TencentCloud => "https://asr.cloud.tencent.com/",
         ProviderKind::BaiduTranslate => "https://aip.baidubce.com/",
         ProviderKind::XAIRealtime => "https://api.x.ai/v1/realtime",
-        // Azure requires the private resource endpoint; this check never reads it.
-        ProviderKind::AzureOpenAIRealtime | ProviderKind::DeepLX => {
+        // Azure, DeepLX and custom relays use private endpoints stored with
+        // the credentials; this check never reads them.
+        ProviderKind::AzureOpenAIRealtime
+        | ProviderKind::DeepLX
+        | ProviderKind::OpenAICompatible => {
             return Ok(serde_json::json!({
                 "credential": storage, "network": "notTested"
             }))

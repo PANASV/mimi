@@ -18,6 +18,10 @@ pub enum ProviderCredentialsError {
     InvalidAzureEndpoint,
     #[error("Use an HTTPS DeepLX endpoint (or HTTP on localhost), without URL credentials, query or fragment.")]
     InvalidDeepLXEndpoint,
+    #[error("Use an HTTPS base URL such as https://openrouter.ai/api/v1 (or HTTP on localhost), without URL credentials, query or fragment.")]
+    InvalidOpenAICompatibleEndpoint,
+    #[error("Enter the speech recognition and translation model names, e.g. qwen/qwen3-asr-1.7b.")]
+    InvalidOpenAICompatibleModel,
     #[error("The Azure OpenAI deployment name is invalid.")]
     InvalidAzureDeployment,
     #[error("One or more credential fields are invalid.")]
@@ -44,6 +48,16 @@ pub enum ProviderCredentials {
     },
     ApiKey {
         api_key: String,
+    },
+    /// Recognition and translation endpoints of an OpenAI-compatible relay.
+    /// Empty translation URL/key reuse the recognition values.
+    OpenAICompatible {
+        asr_base_url: String,
+        asr_api_key: String,
+        asr_model: String,
+        mt_base_url: String,
+        mt_api_key: String,
+        mt_model: String,
     },
     AzureOpenAI {
         endpoint: String,
@@ -83,6 +97,7 @@ impl ProviderCredentials {
         match self {
             Self::DeepLX { .. } => "deeplx",
             Self::ApiKey { .. } => "api_key",
+            Self::OpenAICompatible { .. } => "openai_compatible",
             Self::AzureOpenAI { .. } => "azure_openai",
             Self::TencentCloud { .. } => "tencent_cloud",
             Self::BaiduTranslate { .. } => "baidu_translate",
@@ -109,6 +124,46 @@ impl ProviderCredentials {
                     required_field(token, provider)?
                 },
             }),
+            (
+                ProviderKind::OpenAICompatible,
+                Self::OpenAICompatible {
+                    asr_base_url,
+                    asr_api_key,
+                    asr_model,
+                    mt_base_url,
+                    mt_api_key,
+                    mt_model,
+                },
+            ) => {
+                use crate::core::protocols::openai_compatible::{base_url, model_name};
+                let endpoint = |value: &str| {
+                    base_url(value)
+                        .map_err(|_| ProviderCredentialsError::InvalidOpenAICompatibleEndpoint)
+                };
+                let model = |value: &str| {
+                    model_name(value)
+                        .map_err(|_| ProviderCredentialsError::InvalidOpenAICompatibleModel)
+                };
+                let optional = |value: &str| -> Result<String, ProviderCredentialsError> {
+                    if value.trim().is_empty() {
+                        Ok(String::new())
+                    } else {
+                        required_field(value, provider)
+                    }
+                };
+                Ok(Self::OpenAICompatible {
+                    asr_base_url: endpoint(asr_base_url)?,
+                    asr_api_key: required_field(asr_api_key, provider)?,
+                    asr_model: model(asr_model)?,
+                    mt_base_url: if mt_base_url.trim().is_empty() {
+                        String::new()
+                    } else {
+                        endpoint(mt_base_url)?
+                    },
+                    mt_api_key: optional(mt_api_key)?,
+                    mt_model: model(mt_model)?,
+                })
+            }
             (provider, Self::ApiKey { api_key }) if provider.uses_api_key_only() => {
                 Ok(Self::ApiKey {
                     api_key: required_field(api_key, provider)?,
@@ -187,7 +242,10 @@ impl ProviderCredentials {
         match self {
             Self::ApiKey { api_key } => Some(api_key),
             Self::AzureOpenAI { api_key, .. } => Some(api_key),
-            Self::DeepLX { .. } | Self::TencentCloud { .. } | Self::BaiduTranslate { .. } => None,
+            Self::DeepLX { .. }
+            | Self::OpenAICompatible { .. }
+            | Self::TencentCloud { .. }
+            | Self::BaiduTranslate { .. } => None,
         }
     }
 
@@ -290,6 +348,57 @@ fn validated_azure_endpoint(value: &str) -> Result<String, ProviderCredentialsEr
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn openai_compatible_credentials_round_trip_and_default_translation_endpoint() {
+        let value = ProviderCredentials::OpenAICompatible {
+            asr_base_url: "https://openrouter.ai/api/v1/".into(),
+            asr_api_key: "synthetic-key".into(),
+            asr_model: "qwen/qwen3-asr-1.7b".into(),
+            mt_base_url: " ".into(),
+            mt_api_key: "".into(),
+            mt_model: "deepseek/deepseek-chat".into(),
+        };
+        let encoded = value
+            .encode_for_keychain(ProviderKind::OpenAICompatible)
+            .unwrap();
+        let decoded =
+            ProviderCredentials::decode_from_keychain(ProviderKind::OpenAICompatible, &encoded)
+                .unwrap();
+        assert!(matches!(
+            &decoded,
+            ProviderCredentials::OpenAICompatible { asr_base_url, mt_base_url, mt_api_key, .. }
+                if asr_base_url == "https://openrouter.ai/api/v1" && mt_base_url.is_empty() && mt_api_key.is_empty()
+        ));
+        assert!(format!("{decoded:?}").contains("[REDACTED]"));
+        assert!(!format!("{decoded:?}").contains("synthetic-key"));
+        assert!(value.validated_for(ProviderKind::DeepLX).is_err());
+
+        let insecure = ProviderCredentials::OpenAICompatible {
+            asr_base_url: "http://relay.example.com/v1".into(),
+            asr_api_key: "k".into(),
+            asr_model: "m".into(),
+            mt_base_url: "".into(),
+            mt_api_key: "".into(),
+            mt_model: "m".into(),
+        };
+        assert_eq!(
+            insecure.validated_for(ProviderKind::OpenAICompatible),
+            Err(ProviderCredentialsError::InvalidOpenAICompatibleEndpoint)
+        );
+        let no_model = ProviderCredentials::OpenAICompatible {
+            asr_base_url: "https://openrouter.ai/api/v1".into(),
+            asr_api_key: "k".into(),
+            asr_model: "m".into(),
+            mt_base_url: "".into(),
+            mt_api_key: "".into(),
+            mt_model: "".into(),
+        };
+        assert_eq!(
+            no_model.validated_for(ProviderKind::OpenAICompatible),
+            Err(ProviderCredentialsError::InvalidOpenAICompatibleModel)
+        );
+    }
 
     #[test]
     fn deeplx_credentials_round_trip_securely_and_validate_optional_token() {

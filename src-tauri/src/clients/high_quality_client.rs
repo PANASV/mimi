@@ -5,6 +5,8 @@
 //! serial final-translation queue.
 
 use crate::clients::audio3_client::Audio3ASRClient;
+use crate::clients::openai_compatible_asr_client::OpenAICompatibleASRClient;
+use crate::clients::openai_compatible_chat_client::OpenAICompatibleChatClient;
 use crate::clients::provider_events::{
     provider_event_channel, ProviderEventReceiver, ProviderEventSender,
 };
@@ -138,9 +140,58 @@ impl Inner {
     }
 }
 
+/// Speech recognizer feeding the final-translation queue.
+#[derive(Clone)]
+enum ASRClient {
+    Audio3(Audio3ASRClient),
+    OpenAICompatible(OpenAICompatibleASRClient),
+}
+
+impl ASRClient {
+    async fn set_event_sender(&self, sender: ProviderEventSender) {
+        match self {
+            Self::Audio3(client) => client.set_event_sender(sender).await,
+            Self::OpenAICompatible(client) => client.set_event_sender(sender).await,
+        }
+    }
+    async fn connect(&self, task_id: &str) -> Result<(), String> {
+        match self {
+            Self::Audio3(client) => client.connect(task_id).await.map_err(|e| e.to_string()),
+            Self::OpenAICompatible(client) => client.connect().await.map_err(|e| e.to_string()),
+        }
+    }
+    async fn send_audio(&self, pcm_data: &[u8]) -> Result<(), String> {
+        match self {
+            Self::Audio3(client) => client.send_audio(pcm_data).await.map_err(|e| e.to_string()),
+            Self::OpenAICompatible(client) => {
+                client.send_audio(pcm_data).await.map_err(|e| e.to_string())
+            }
+        }
+    }
+    async fn ping(&self, timeout: Duration) -> Result<(), String> {
+        match self {
+            Self::Audio3(client) => client.ping(timeout).await.map_err(|e| e.to_string()),
+            Self::OpenAICompatible(client) => client.ping(timeout).await.map_err(|e| e.to_string()),
+        }
+    }
+    async fn finish(&self, timeout: Duration) {
+        match self {
+            Self::Audio3(client) => client.finish(timeout).await,
+            Self::OpenAICompatible(client) => client.finish(timeout).await,
+        }
+    }
+    async fn disconnect(&self) {
+        match self {
+            Self::Audio3(client) => client.disconnect().await,
+            Self::OpenAICompatible(client) => client.disconnect().await,
+        }
+    }
+}
+
 enum TextTranslationClient {
     Qwen(QwenMTClient),
     DeepLX(crate::clients::deeplx_client::DeepLXClient),
+    OpenAICompatible(OpenAICompatibleChatClient),
 }
 impl TextTranslationClient {
     async fn translate(
@@ -155,6 +206,10 @@ impl TextTranslationClient {
                 .translate(text, source)
                 .await
                 .map_err(QwenMTClientError::DeepLX),
+            Self::OpenAICompatible(client) => client
+                .translate(text, source)
+                .await
+                .map_err(QwenMTClientError::OpenAICompatible),
         }
     }
     async fn translate_streaming(
@@ -174,13 +229,17 @@ impl TextTranslationClient {
                 .translate(text, source)
                 .await
                 .map_err(QwenMTClientError::DeepLX),
+            Self::OpenAICompatible(client) => client
+                .translate(text, source)
+                .await
+                .map_err(QwenMTClientError::OpenAICompatible),
         }
     }
 }
 
 #[derive(Clone)]
 pub struct HighQualityTranslationClient {
-    asr_client: Audio3ASRClient,
+    asr_client: ASRClient,
     mt: Arc<TextTranslationClient>,
     source_language: SourceLanguage,
     translates_audio: bool,
@@ -205,8 +264,10 @@ impl HighQualityTranslationClient {
         long_incomplete_commit_threshold: usize,
         events: ProviderEventSender,
     ) -> Result<Self, QwenMTClientError> {
-        let asr_client = Audio3ASRClient::new(api_key, source_language)
-            .map_err(|_| QwenMTClientError::MissingAPIKey)?;
+        let asr_client = ASRClient::Audio3(
+            Audio3ASRClient::new(api_key, source_language)
+                .map_err(|_| QwenMTClientError::MissingAPIKey)?,
+        );
         let streams_finals = final_model != QwenMTModel::Plus;
         let domain_hint = Some(
             crate::core::protocols::qwen_mt::QwenMTDomainHint::spoken_dialogue(
@@ -227,9 +288,34 @@ impl HighQualityTranslationClient {
             filler_terms,
             Duration::from_secs(8),
         )?;
-        Ok(Self {
+        Ok(Self::assemble(
             asr_client,
-            mt: Arc::new(TextTranslationClient::Qwen(mt)),
+            TextTranslationClient::Qwen(mt),
+            source_language,
+            target_language,
+            stable_draft_delay,
+            maximum_wait_delay,
+            long_incomplete_commit_threshold,
+            events,
+            streams_finals,
+        ))
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn assemble(
+        asr_client: ASRClient,
+        mt: TextTranslationClient,
+        source_language: SourceLanguage,
+        target_language: TargetLanguage,
+        stable_draft_delay: Duration,
+        maximum_wait_delay: Duration,
+        long_incomplete_commit_threshold: usize,
+        events: ProviderEventSender,
+        streams_finals: bool,
+    ) -> Self {
+        Self {
+            asr_client,
+            mt: Arc::new(mt),
             source_language,
             translates_audio: target_language.translates_audio(),
             events,
@@ -256,7 +342,7 @@ impl HighQualityTranslationClient {
             stable_draft_delay,
             maximum_wait_delay,
             streams_finals,
-        })
+        }
     }
 
     pub fn new_deeplx(
@@ -286,6 +372,50 @@ impl HighQualityTranslationClient {
         Ok(pipeline)
     }
 
+    /// OpenAI-compatible relay: `/audio/transcriptions` recognition and
+    /// `/chat/completions` translation. Empty translation URL/key reuse the
+    /// recognition values. Finals only; no ASR drafts are produced.
+    #[allow(clippy::too_many_arguments)]
+    pub fn new_openai_compatible(
+        asr_base_url: &str,
+        asr_api_key: &str,
+        asr_model: &str,
+        mt_base_url: &str,
+        mt_api_key: &str,
+        mt_model: &str,
+        source: SourceLanguage,
+        target: TargetLanguage,
+        events: ProviderEventSender,
+    ) -> Result<Self, QwenMTClientError> {
+        let asr = OpenAICompatibleASRClient::new(asr_base_url, asr_api_key, asr_model, source)
+            .map_err(QwenMTClientError::OpenAICompatible)?;
+        let mt_base_url = if mt_base_url.trim().is_empty() {
+            asr_base_url
+        } else {
+            mt_base_url
+        };
+        let mt_api_key = if mt_api_key.trim().is_empty() {
+            asr_api_key
+        } else {
+            mt_api_key
+        };
+        let mt = OpenAICompatibleChatClient::new(mt_base_url, mt_api_key, mt_model, source, target)
+            .map_err(QwenMTClientError::OpenAICompatible)?;
+        // Reuse bounded workers, generation checks, cancellation and final
+        // order from the Audio 3.0 pipeline; only the two clients differ.
+        Ok(Self::assemble(
+            ASRClient::OpenAICompatible(asr),
+            TextTranslationClient::OpenAICompatible(mt),
+            source,
+            target,
+            Duration::from_millis(500),
+            Duration::from_millis(2_000),
+            12,
+            events,
+            false,
+        ))
+    }
+
     /// Connects the recognizer and resets all draft/final workers.
     pub async fn connect(&self) -> Result<(), QwenMTClientError> {
         self.reset_draft_state().await;
@@ -295,10 +425,10 @@ impl HighQualityTranslationClient {
         let task_id = Uuid::new_v4().simple().to_string();
         let (asr_tx, asr_rx) = provider_event_channel();
         self.asr_client.set_event_sender(asr_tx).await;
-        self.asr_client.connect(&task_id).await.map_err(|error| {
+        self.asr_client.connect(&task_id).await.map_err(|message| {
             QwenMTClientError::RequestFailed {
                 status_code: 0,
-                message: error.to_string(),
+                message,
             }
         })?;
 
@@ -307,12 +437,13 @@ impl HighQualityTranslationClient {
     }
 
     pub async fn send_audio(&self, pcm_data: &[u8]) -> Result<(), QwenMTClientError> {
-        self.asr_client.send_audio(pcm_data).await.map_err(|error| {
-            QwenMTClientError::RequestFailed {
+        self.asr_client
+            .send_audio(pcm_data)
+            .await
+            .map_err(|message| QwenMTClientError::RequestFailed {
                 status_code: 0,
-                message: error.to_string(),
-            }
-        })
+                message,
+            })
     }
 
     pub async fn ping(&self, timeout: Duration) -> Result<(), QwenMTClientError> {
