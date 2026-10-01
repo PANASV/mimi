@@ -12,6 +12,7 @@ import {
 } from "./types";
 
 export const SERVICE_PROVIDERS: readonly ServiceProvider[] = [
+  "openAICompatible",
   "alibabaCloud",
   "openAIRealtime",
   "googleGeminiLive",
@@ -21,7 +22,6 @@ export const SERVICE_PROVIDERS: readonly ServiceProvider[] = [
   "baiduTranslate",
   "xAIRealtime",
   "deepLX",
-  "openAICompatible",
 ];
 
 const PROVIDER_CAPABILITIES: Readonly<
