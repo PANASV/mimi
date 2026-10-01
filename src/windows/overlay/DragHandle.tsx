@@ -50,14 +50,18 @@ export function DragHandle({
       className="relative flex items-center justify-center"
       style={{ width: handleWidth, height }}
     >
+      {/* Kept clearly visible over bright video: a wider, more opaque grip
+          with a dark outline so it reads on both light and dark backdrops. */}
       <div
         style={{
-          width: hovered ? 40 : 32,
-          height: 3,
-          borderRadius: 1.5,
+          width: hovered ? 60 : 48,
+          height: 5,
+          borderRadius: 2.5,
           background: hovered
-            ? "rgba(122, 168, 255, 0.78)"
-            : "rgba(255, 255, 255, 0.28)",
+            ? "rgba(122, 168, 255, 0.95)"
+            : "rgba(255, 255, 255, 0.62)",
+          boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.35)",
+          transition: "width 120ms ease, background 120ms ease",
         }}
       />
     </div>
