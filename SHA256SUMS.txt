@@ -1,0 +1,4 @@
+aa3f63a51d84eabb971d32a1ba2fbdf206acdd7cb26b9db03b6ee2abc0fff889  bilingual-visible-without-scroll.jpg
+fc4c7f952a5f2621b98dfabaff0fa0d7288fcb3b10588c2a33e8a87612db3c9f  guide-save-regression.jpg
+bc284e206b594ddee8b4a5d78e1b2280e699a173e06f1725bcc40d7cebd5e8a6  settings-label-after-navigation.jpg
+6e68a705974091f4fadde643d81b99954f6998e716739fc91d201a230579371d  settings-motion-off-bilingual.jpg
